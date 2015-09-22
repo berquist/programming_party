@@ -1,3 +1,9 @@
+build/
+dist/
+
+# Python
+*.py[co]
+
 # Compiled Object files
 *.slo
 *.lo
