@@ -1,0 +1,1159 @@
+
+
+     ************************************************************************
+     *************** Dalton - An Electronic Structure Program ***************
+     ************************************************************************
+
+    This is output from DALTON 2015.0
+   ----------------------------------------------------------------------------
+    NOTE:
+     
+    Dalton is an experimental code for the evaluation of molecular
+    properties using (MC)SCF, DFT, CI, and CC wave functions.
+    The authors accept no responsibility for the performance of
+    the code or for the correctness of the results.
+     
+    The code (in whole or part) is provided under a licence and
+    is not to be reproduced for further distribution without
+    the written permission of the authors or their representatives.
+     
+    See the home page "http://daltonprogram.org" for further information.
+     
+    If results obtained with this code are published,
+    the appropriate citations would be both of:
+     
+       K. Aidas, C. Angeli, K. L. Bak, V. Bakken, R. Bast,
+       L. Boman, O. Christiansen, R. Cimiraglia, S. Coriani,
+       J. Cukras, P. Dahle, E. K. Dalskov, U. Ekstroem,
+       T. Enevoldsen, J. J. Eriksen, P. Ettenhuber, B. Fernandez,
+       L. Ferrighi, H. Fliegl, L. Frediani, K. Hald, A. Halkier,
+       C. Haettig, H. Heiberg, T. Helgaker, A. C. Hennum,
+       H. Hettema, E. Hjertenaes, S. Hoest, I.-M. Hoeyvik,
+       M. F. Iozzi, B. Jansik, H. J. Aa. Jensen, D. Jonsson,
+       P. Joergensen, M. Kaminski, J. Kauczor, S. Kirpekar,
+       T. Kjaergaard, W. Klopper, S. Knecht, R. Kobayashi, H. Koch,
+       J. Kongsted, A. Krapp, K. Kristensen, A. Ligabue,
+       O. B. Lutnaes, J. I. Melo, K. V. Mikkelsen, R. H. Myhre,
+       C. Neiss, C. B. Nielsen, P. Norman, J. Olsen,
+       J. M. H. Olsen, A. Osted, M. J. Packer, F. Pawlowski,
+       T. B. Pedersen, P. F. Provasi, S. Reine, Z. Rinkevicius,
+       T. A. Ruden, K. Ruud, V. Rybkin, P. Salek, C. C. M. Samson,
+       A. Sanchez de Meras, T. Saue, S. P. A. Sauer,
+       B. Schimmelpfennig, K. Sneskov, A. H. Steindal,
+       K. O. Sylvester-Hvid, P. R. Taylor, A. M. Teale,
+       E. I. Tellgren, D. P. Tew, A. J. Thorvaldsen, L. Thoegersen,
+       O. Vahtras, M. A. Watson, D. J. D. Wilson, M. Ziolkowski
+       and H. Agren,
+       "The Dalton quantum chemistry program system",
+       WIREs Comput. Mol. Sci. 2013. (doi: 10.1002/wcms.1172)
+    
+    and
+    
+       Dalton, a Molecular Electronic Structure Program,
+       Release DALTON2014.0 (2015), see http://daltonprogram.org
+   ----------------------------------------------------------------------------
+
+    Authors in alphabetical order (major contribution(s) in parenthesis):
+
+  Kestutis Aidas,           Vilnius University,           Lithuania   (QM/MM)
+  Celestino Angeli,         University of Ferrara,        Italy       (NEVPT2)
+  Keld L. Bak,              UNI-C,                        Denmark     (AOSOPPA, non-adiabatic coupling, magnetic properties)
+  Vebjoern Bakken,          University of Oslo,           Norway      (DALTON; geometry optimizer, symmetry detection)
+  Radovan Bast,             KTH Stockholm,                Sweden      (DALTON installation and execution frameworks)
+  Pablo Baudin,             University of Valencia,       Spain       (Cholesky excitation energies)
+  Linus Boman,              NTNU,                         Norway      (Cholesky decomposition and subsystems)
+  Ove Christiansen,         Aarhus University,            Denmark     (CC module)
+  Renzo Cimiraglia,         University of Ferrara,        Italy       (NEVPT2)
+  Sonia Coriani,            University of Trieste,        Italy       (CC module, MCD in RESPONS)
+  Janusz Cukras,            University of Trieste,        Italy       (MChD in RESPONS)
+  Paal Dahle,               University of Oslo,           Norway      (Parallelization)
+  Erik K. Dalskov,          UNI-C,                        Denmark     (SOPPA)
+  Thomas Enevoldsen,        Univ. of Southern Denmark,    Denmark     (SOPPA)
+  Janus J. Eriksen,         Aarhus University,            Denmark     (Polarizable embedding model, TDA)
+  Berta Fernandez,          U. of Santiago de Compostela, Spain       (doublet spin, ESR in RESPONS)
+  Lara Ferrighi,            Aarhus University,            Denmark     (PCM Cubic response)
+  Heike Fliegl,             University of Oslo,           Norway      (CCSD(R12))
+  Luca Frediani,            UiT The Arctic U. of Norway,  Norway      (PCM)
+  Bin Gao,                  UiT The Arctic U. of Norway,  Norway      (Gen1Int library)
+  Christof Haettig,         Ruhr-University Bochum,       Germany     (CC module)
+  Kasper Hald,              Aarhus University,            Denmark     (CC module)
+  Asger Halkier,            Aarhus University,            Denmark     (CC module)
+  Erik D. Hedegaard,        Univ. of Southern Denmark,    Denmark     (Polarizable embedding model, QM/MM)
+  Hanne Heiberg,            University of Oslo,           Norway      (geometry analysis, selected one-electron integrals)
+  Trygve Helgaker,          University of Oslo,           Norway      (DALTON; ABACUS, ERI, DFT modules, London, and much more)
+  Alf Christian Hennum,     University of Oslo,           Norway      (Parity violation)
+  Hinne Hettema,            University of Auckland,       New Zealand (quadratic response in RESPONS; SIRIUS supersymmetry)
+  Eirik Hjertenaes,         NTNU,                         Norway      (Cholesky decomposition)
+  Maria Francesca Iozzi,    University of Oslo,           Norway      (RPA)
+  Brano Jansik              Technical Univ. of Ostrava    Czech Rep.  (DFT cubic response)
+  Hans Joergen Aa. Jensen,  Univ. of Southern Denmark,    Denmark     (DALTON; SIRIUS, RESPONS, ABACUS modules, London, and much more)
+  Dan Jonsson,              UiT The Arctic U. of Norway,  Norway      (cubic response in RESPONS module)
+  Poul Joergensen,          Aarhus University,            Denmark     (RESPONS, ABACUS, and CC modules)
+  Maciej Kaminski,          University of Warsaw,         Poland      (CPPh in RESPONS)
+  Joanna Kauczor,           Linkoeping University,        Sweden      (Complex polarization propagator (CPP) module)
+  Sheela Kirpekar,          Univ. of Southern Denmark,    Denmark     (Mass-velocity & Darwin integrals)
+  Wim Klopper,              KIT Karlsruhe,                Germany     (R12 code in CC, SIRIUS, and ABACUS modules)
+  Stefan Knecht,            ETH Zurich,                   Switzerland (Parallel CI and MCSCF)
+  Rika Kobayashi,           Australian National Univ.,    Australia   (DIIS in CC, London in MCSCF)
+  Henrik Koch,              NTNU,                         Norway      (CC module, Cholesky decomposition)
+  Jacob Kongsted,           Univ. of Southern Denmark,    Denmark     (Polarizable embedding model, QM/MM)
+  Andrea Ligabue,           University of Modena,         Italy       (CTOCD, AOSOPPA)
+  Nanna H. List             Univ. of Southern Denmark,    Denmark     (Polarizable embedding model)
+  Ola B. Lutnaes,           University of Oslo,           Norway      (DFT Hessian)
+  Juan I. Melo,             University of Buenos Aires,   Argentina   (LRESC, Relativistic Effects on NMR Shieldings)
+  Kurt V. Mikkelsen,        University of Copenhagen,     Denmark     (MC-SCRF and QM/MM)
+  Rolf H. Myhre,            NTNU,                         Norway      (Cholesky, subsystems and ECC2)
+  Christian Neiss,          Univ. Erlangen-Nuernberg,     Germany     (CCSD(R12))
+  Christian B. Nielsen,     University of Copenhagen,     Denmark     (QM/MM)
+  Patrick Norman,           Linkoeping University,        Sweden      (Cubic response and complex response in RESPONS)
+  Jeppe Olsen,              Aarhus University,            Denmark     (SIRIUS CI/density modules)
+  Jogvan Magnus H. Olsen,   Univ. of Southern Denmark,    Denmark     (Polarizable embedding model, QM/MM)
+  Anders Osted,             Copenhagen University,        Denmark     (QM/MM)
+  Martin J. Packer,         University of Sheffield,      UK          (SOPPA)
+  Filip Pawlowski,          Kazimierz Wielki University,  Poland      (CC3)
+  Morten N. Pedersen,       Univ. of Southern Denmark,    Denmark     (Polarizable embedding model)
+  Thomas B. Pedersen,       University of Oslo,           Norway      (Cholesky decomposition)
+  Patricio F. Provasi,      University of Northeastern,   Argentina   (Analysis of coupling constants in localized orbitals)
+  Zilvinas Rinkevicius,     KTH Stockholm,                Sweden      (open-shell DFT, ESR)
+  Elias Rudberg,            KTH Stockholm,                Sweden      (DFT grid and basis info)
+  Torgeir A. Ruden,         University of Oslo,           Norway      (Numerical derivatives in ABACUS)
+  Kenneth Ruud,             UiT The Arctic U. of Norway,  Norway      (DALTON; ABACUS magnetic properties and much more)
+  Pawel Salek,              KTH Stockholm,                Sweden      (DALTON; DFT code)
+  Claire C. M. Samson       University of Karlsruhe       Germany     (Boys localization, r12 integrals in ERI)
+  Alfredo Sanchez de Meras, University of Valencia,       Spain       (CC module, Cholesky decomposition)
+  Trond Saue,               Paul Sabatier University,     France      (direct Fock matrix construction)
+  Stephan P. A. Sauer,      University of Copenhagen,     Denmark     (SOPPA(CCSD), SOPPA prop., AOSOPPA, vibrational g-factors)
+  Bernd Schimmelpfennig,    Forschungszentrum Karlsruhe,  Germany     (AMFI module)
+  Kristian Sneskov,         Aarhus University,            Denmark     (Polarizable embedding model, QM/MM)
+  Arnfinn H. Steindal,      UiT The Arctic U. of Norway,  Norway      (parallel QM/MM, Polarizable embedding model)
+  Casper Steinmann,         Univ. of Southern Denmark,    Denmark     (QFIT, Polarizable embedding model)
+  K. O. Sylvester-Hvid,     University of Copenhagen,     Denmark     (MC-SCRF)
+  Peter R. Taylor,          VLSCI/Univ. of Melbourne,     Australia   (Symmetry handling ABACUS, integral transformation)
+  Andrew M. Teale,          University of Nottingham,     England     (DFT-AC, DFT-D)
+  David P. Tew,             University of Bristol,        England     (CCSD(R12))
+  Olav Vahtras,             KTH Stockholm,                Sweden      (triplet response, spin-orbit, ESR, TDDFT, open-shell DFT)
+  David J. Wilson,          La Trobe University,          Australia   (DFT Hessian and DFT magnetizabilities)
+  Hans Agren,               KTH Stockholm,                Sweden      (SIRIUS module, RESPONS, MC-SCRF solvation model)
+ --------------------------------------------------------------------------------
+
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+ * Work memory size             :    64000000 =  488.28 megabytes.
+
+ * Directories for basis set searches:
+   1) /home/eric/development/programming_party/eric/project3/industrial_quantum_packages
+   2) /home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis
+
+
+Compilation information
+-----------------------
+
+ Who compiled             | eric
+ Host                     | copper
+ System                   | Linux-3.13.0-46-generic
+ CMake generator          | Unix Makefiles
+ Processor                | x86_64
+ 64-bit integers          | OFF
+ MPI                      | OFF
+ Fortran compiler         | /home/eric/opt/apps/intel/2013_sp1_update1/compose
+                          | r_xe_2013_sp1.1.106/bin/intel64/ifort
+ Fortran compiler version | ifort (IFORT) 14.0.1 20131008
+ C compiler               | /home/eric/opt/apps/intel/2013_sp1_update1/compose
+                          | r_xe_2013_sp1.1.106/bin/intel64/icc
+ C compiler version       | icc (ICC) 14.0.1 20131008
+ C++ compiler             | /home/eric/opt/apps/intel/2013_sp1_update1/compose
+                          | r_xe_2013_sp1.1.106/bin/intel64/icpc
+ C++ compiler version     | icpc (ICC) 14.0.1 20131008
+ Static linking           | OFF
+ Last Git revision        | d34efb170c481236ad60c789dea90a4c857c6bab
+ Configuration time       | 2015-03-16 13:50:41.378554
+
+
+   Content of the .dal input file
+ ----------------------------------
+
+BASIS                                             
+STO-3G                                            
+---                                               
+---                                               
+Atomtypes=2 Bohr Charge=0 Nosymmetry              
+Charge=8.0 Atoms=1                                
+O   0.000000000000  -0.143225816552   0.0000000000
+Charge=1.0 Atoms=2                                
+H   1.638036840407   1.136548822547  -0.0000000000
+H  -1.638036840407   1.136548822547  -0.0000000000
+                                                  
+**DALTON INPUT                                    
+.RUN ALL                                          
+**WAVE FUNCTIONS                                  
+.HF                                               
+*POPULATION ANALYSIS                              
+.MULLIKEN                                         
+**INTEGRAL                                        
+.DIPLEN                                           
+.KINENE                                           
+.1ELPOT                                           
+.PROPRI                                           
+**END OF DALTON INPUT                             
+
+
+       *******************************************************************
+       *********** Output from DALTON general input processing ***********
+       *******************************************************************
+
+ --------------------------------------------------------------------------------
+   Overall default print level:    0
+   Print level for DALTON.STAT:    1
+
+    HERMIT 1- and 2-electron integral sections will be executed
+    "Old" integral transformation used (limited to max 255 basis functions)
+    Wave function sections will be executed (SIRIUS module)
+    Dynamic molecular response properties section will be executed (RESPONSE module)
+    Static molecular property section will be executed (ABACUS module)
+ --------------------------------------------------------------------------------
+
+
+   ****************************************************************************
+   *************** Output of molecule and basis set information ***************
+   ****************************************************************************
+
+
+    The two title cards from your ".mol" input:
+    ------------------------------------------------------------------------
+ 1: ---                                                                     
+ 2: ---                                                                     
+    ------------------------------------------------------------------------
+
+  Atomic type no.    1
+  --------------------
+  Nuclear charge:   8.00000
+  Number of symmetry independent centers:    1
+  Number of basis sets to read;    2
+  Basis set file used for this atomic type with Z =   8 :
+     "/home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis/STO-3G"
+
+  Atomic type no.    2
+  --------------------
+  Nuclear charge:   1.00000
+  Number of symmetry independent centers:    2
+  Number of basis sets to read;    2
+  Basis set file used for this atomic type with Z =   1 :
+     "/home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis/STO-3G"
+
+
+                         SYMGRP: Point group information
+                         -------------------------------
+
+@    Point group: C1 
+
+
+                                 Isotopic Masses
+                                 ---------------
+
+                           O          15.994915
+                           H           1.007825
+                           H           1.007825
+
+                       Total mass:    18.010565 amu
+                       Natural abundance:  99.730 %
+
+ Center-of-mass coordinates (a.u.):    0.000000   -0.000000    0.000000
+
+
+  Atoms and basis sets
+  --------------------
+
+  Number of atom types :    2
+  Total number of atoms:    3
+
+  Basis set used is "STO-3G" from the basis set library.
+
+  label    atoms   charge   prim   cont     basis
+  ----------------------------------------------------------------------
+  O           1    8.0000    15     5      [6s3p|2s1p]                                        
+  H           2    1.0000     3     1      [3s|1s]                                            
+  ----------------------------------------------------------------------
+  total:      3   10.0000    21     7
+  ----------------------------------------------------------------------
+
+  Threshold for neglecting AO integrals:  1.00D-12
+
+
+  Cartesian Coordinates (a.u.)
+  ----------------------------
+
+  Total number of coordinates:    9
+  O       :     1  x   0.0000000000    2  y  -0.1432258166    3  z   0.0000000000
+  H       :     4  x   1.6380368404    5  y   1.1365488225    6  z   0.0000000000
+  H       :     7  x  -1.6380368404    8  y   1.1365488225    9  z   0.0000000000
+
+
+   Interatomic separations (in Angstrom):
+   --------------------------------------
+
+            O           H           H     
+            ------      ------      ------
+ O     :    0.000000
+ H     :    1.100000    0.000000
+ H     :    1.100000    1.733624    0.000000
+
+
+  Max    interatomic separation is    1.7336 Angstrom (    3.2761 Bohr)
+  between atoms    3 and    2, "H     " and "H     ".
+
+  Min HX interatomic separation is    1.1000 Angstrom (    2.0787 Bohr)
+
+
+  Bond distances (Angstrom):
+  --------------------------
+
+                  atom 1     atom 2       distance
+                  ------     ------       --------
+  bond distance:  H          O            1.100000
+  bond distance:  H          O            1.100000
+
+
+  Bond angles (degrees):
+  ----------------------
+
+                  atom 1     atom 2     atom 3         angle
+                  ------     ------     ------         -----
+  bond angle:     H          O          H            104.000
+
+
+
+
+ Principal moments of inertia (u*A**2) and principal axes
+ --------------------------------------------------------
+
+   IA       0.820992          1.000000    0.000000    0.000000
+   IB       1.514484          0.000000    1.000000    0.000000
+   IC       2.335476          0.000000    0.000000    1.000000
+
+
+ Rotational constants
+ --------------------
+
+@    The molecule is planar.
+
+               A                   B                   C
+
+         615571.0820         333697.1351         216392.2723 MHz
+           20.533241           11.130938            7.218069 cm-1
+
+
+@  Nuclear repulsion energy :    8.002367061811 Hartree
+
+
+                     .---------------------------------------.
+                     | Starting in Integral Section (HERMIT) |
+                     `---------------------------------------'
+
+
+
+ ***************************************************************************************
+ ****************** Output from **INTEGRALS input processing (HERMIT) ******************
+ ***************************************************************************************
+
+
+
+    *************************************************************************
+    ****************** Output from HERMIT input processing ******************
+    *************************************************************************
+
+
+ Default print level:        1
+
+ * Nuclear model: Point charge
+
+ Calculation of one- and two-electron Hamiltonian integrals.
+
+ The following one-electron property integrals are calculated as requested:
+          - overlap integrals
+          - dipole length integrals
+          - electronic kinetic energy
+          - Potential energy Hamiltonian integrals
+
+ All one-electron property integrals are printed.
+
+ Center of mass  (bohr):      0.000000000000     -0.000000007073      0.000000000000
+ Operator center (bohr):      0.000000000000      0.000000000000      0.000000000000
+ Gauge origin    (bohr):      0.000000000000      0.000000000000      0.000000000000
+ Dipole origin   (bohr):      0.000000000000      0.000000000000      0.000000000000
+
+
+     ************************************************************************
+     ************************** Output from HERINT **************************
+     ************************************************************************
+
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: HUCKOVLP !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       1.00000000
+       2       0.23670394     1.00000000
+       3       0.00000000     0.00000000     1.00000000
+       4       0.00000000    -0.00000000     0.00000000     1.00000000
+       6       0.03840560     0.38613884     0.26843824     0.20972694
+       7       0.03840560     0.38613884    -0.26843824     0.20972694
+       8       0.99963744     0.25305034     0.00000000    -0.00000000
+       9      -0.01704350     0.96584043     0.00000000     0.00000000
+      10       0.00000000     0.00000000     0.98098348     0.00000000
+      11      -0.00000000    -0.00000000     0.00000000     0.98098348
+      13       0.04333248     0.41615110     0.25544350     0.19957433
+      14       0.04333248     0.41615110    -0.25544350     0.19957433
+
+               Column   5     Column   6     Column   7     Column   8
+       5       1.00000000
+       6       0.00000000     1.00000000
+       7       0.00000000     0.18175989     1.00000000
+       8       0.00000000     0.04200125     0.04200125     1.00000000
+       9       0.00000000     0.39767796     0.39767796    -0.00000000
+      10       0.00000000     0.32782645    -0.32782645     0.00000000
+      11       0.00000000     0.25612609     0.25612609    -0.00000000
+      12       0.98098348     0.00000000     0.00000000     0.00000000
+      13       0.00000000     0.99165347     0.21928817     0.04729523
+      14       0.00000000     0.21928817     0.99165347     0.04729523
+
+               Column   9     Column  10     Column  11     Column  12
+       9       1.00000000
+      10       0.00000000     1.00000000
+      11      -0.00000000     0.00000000     1.00000000
+      12       0.00000000     0.00000000     0.00000000     1.00000000
+      13       0.43013189     0.31818221     0.24859119     0.00000000
+      14       0.43013189    -0.31818221     0.24859119     0.00000000
+
+               Column  13     Column  14
+      13       1.00000000
+      14       0.26333547     1.00000000
+    ==== End of matrix output ====
+
+
+                         +-------------------------------+
+                         ! Integrals of operator: HUCKEL !
+                         +-------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       1.00000000
+       2       0.23670394     1.00000000
+       3       0.00000000     0.00000000     1.00000000
+       4       0.00000000    -0.00000000     0.00000000     1.00000000
+       6       0.03840560     0.38613884     0.26843824     0.20972694
+       7       0.03840560     0.38613884    -0.26843824     0.20972694
+       8       0.99963744     0.25305034     0.00000000    -0.00000000
+       9      -0.01704350     0.96584043     0.00000000     0.00000000
+      10       0.00000000     0.00000000     0.98098348     0.00000000
+      11      -0.00000000    -0.00000000     0.00000000     0.98098348
+      13       0.04333248     0.41615110     0.25544350     0.19957433
+      14       0.04333248     0.41615110    -0.25544350     0.19957433
+
+               Column   5     Column   6     Column   7     Column   8
+       5       1.00000000
+       6       0.00000000     1.00000000
+       7       0.00000000     0.18175989     1.00000000
+       8       0.00000000     0.04200125     0.04200125   -20.68090000
+       9       0.00000000     0.39767796     0.39767796     0.00000000
+      10       0.00000000     0.32782645    -0.32782645     0.00000000
+      11       0.00000000     0.25612609     0.25612609     0.00000000
+      12       0.98098348     0.00000000     0.00000000     0.00000000
+      13       0.00000000     0.99165347     0.21928817     0.00000000
+      14       0.00000000     0.21928817     0.99165347     0.00000000
+
+               Column   9     Column  10     Column  11     Column  12
+       9      -1.25040000
+      10       0.00000000    -0.61620000
+      11       0.00000000     0.00000000    -0.61620000
+      12       0.00000000     0.00000000     0.00000000    -0.61620000
+
+               Column  13     Column  14
+      13      -0.50000000
+      14       0.00000000    -0.50000000
+    ==== End of matrix output ====
+
+
+                         +--------------------------------+
+                         ! Integrals of operator: OVERLAP !
+                         +--------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       1.00000000
+       2       0.23670394     1.00000000
+       3       0.00000000     0.00000000     1.00000000
+       4       0.00000000    -0.00000000     0.00000000     1.00000000
+       6       0.03840560     0.38613884     0.26843824     0.20972694
+       7       0.03840560     0.38613884    -0.26843824     0.20972694
+
+               Column   5     Column   6     Column   7
+       5       1.00000000
+       6       0.00000000     1.00000000
+       7       0.00000000     0.18175989     1.00000000
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: HJPOPOVL !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4     Column   5
+       1       1.00000000     0.23670394     0.00000000     0.00000000     0.00000000
+       2       0.23670394     1.00000000     0.00000000    -0.00000000     0.00000000
+       3       0.00000000     0.00000000     1.00000000     0.00000000     0.00000000
+       4       0.00000000    -0.00000000     0.00000000     1.00000000     0.00000000
+       5       0.00000000     0.00000000     0.00000000     0.00000000     1.00000000
+       6       0.07408885     0.45147599     0.30652430     0.23948303     0.00000000
+       7       0.07408885     0.45147599    -0.30652430     0.23948303     0.00000000
+
+               Column   6     Column   7
+       1       0.00272235     0.00272235
+       2       0.32080170     0.32080170
+       3       0.23035219    -0.23035219
+       4       0.17997086     0.17997086
+       6       1.00000000     0.18175989
+       7       0.18175989     1.00000000
+    ==== End of matrix output ====
+
+
+                         +--------------------------------+
+                         ! Integrals of operator: XDIPLEN !
+                         +--------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       3       0.05079193     0.64117284     0.00000000
+       4       0.00000000     0.00000000    -0.00000000     0.00000000
+       6       0.00222965     0.26274250     0.43763065     0.14739945
+       7      -0.00222965    -0.26274250     0.43763065    -0.14739945
+
+               Column   5     Column   6     Column   7
+       6       0.00000000     1.63803684
+       7       0.00000000     0.00000000    -1.63803684
+    ==== End of matrix output ====
+
+
+                         +--------------------------------+
+                         ! Integrals of operator: YDIPLEN !
+                         +--------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1      -0.14322582
+       2      -0.03390211    -0.14322582
+       3       0.00000000     0.00000000    -0.14322582
+       4       0.05079193     0.64117284     0.00000000    -0.14322582
+       6      -0.00375868     0.14997189     0.10895216     0.33409072
+       7      -0.00375868     0.14997189    -0.10895216     0.33409072
+
+               Column   5     Column   6     Column   7
+       5      -0.14322582
+       6       0.00000000     1.13654882
+       7       0.00000000     0.20657899     1.13654882
+    ==== End of matrix output ====
+
+
+                         +--------------------------------+
+                         ! Integrals of operator: ZDIPLEN !
+                         +--------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       5       0.05079193     0.64117284     0.00000000    -0.00000000
+
+               Column   5     Column   6     Column   7
+       6       0.24896796     0.00000000
+       7       0.24896796     0.00000000     0.00000000
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: XXQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       0.01363883
+       2       0.00814593     0.25096057
+       3       0.00000000     0.00000000     0.15367374
+       4      -0.00363736    -0.04591625     0.00000000     0.30221908
+       6       0.00118626     0.14283297     0.08130178     0.09691770
+       7       0.00118626     0.14283297    -0.08130178     0.09691770
+
+               Column   5     Column   6     Column   7
+       5       0.30221908
+       6       0.00000000     0.64769793
+       7       0.00000000     0.14706244     0.64769793
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: XYQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       3       0.00181868     0.02295813     0.00000000
+       4       0.00000000     0.00000000    -0.07427267     0.00000000
+       6       0.00003666    -0.03270321    -0.04183088    -0.05241911
+       7      -0.00003666     0.03270321    -0.04183088     0.05241911
+
+               Column   5     Column   6     Column   7
+       6       0.00000000    -0.46542721
+       7       0.00000000     0.00000000     0.46542721
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: XZQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       5       0.00000000     0.00000000    -0.07427267     0.00000000
+
+               Column   5     Column   6     Column   7
+       6      -0.03278386     0.00000000
+       7       0.03278386     0.00000000     0.00000000
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: YYQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       0.00851042
+       2       0.00693201     0.24583217
+       3       0.00000000     0.00000000     0.29709067
+       4       0.00000000    -0.00000000     0.00000000     0.14854533
+       6       0.00113558     0.17655212     0.17194934     0.08311444
+       7       0.00113558     0.17655212    -0.17194934     0.08311444
+
+               Column   5     Column   6     Column   7
+       5       0.29709067
+       6       0.00000000     0.99555330
+       7       0.00000000     0.11090454     0.99555330
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: YZQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       5       0.00181868     0.02295813     0.00000000    -0.07427267
+
+               Column   5     Column   6     Column   7
+       6      -0.01669890     0.00000000
+       7      -0.01669890     0.00000000     0.00000000
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: ZZQUADRU !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1       0.01363883
+       2       0.00814593     0.25096057
+       3       0.00000000     0.00000000     0.30221908
+       4      -0.00363736    -0.04591625     0.00000000     0.30221908
+       6       0.00124152     0.19673271     0.18768340     0.12880503
+       7       0.00124152     0.19673271    -0.18768340     0.12880503
+
+               Column   5     Column   6     Column   7
+       5       0.15367374
+       6       0.00000000     1.31848910
+       7       0.00000000     0.16960132     1.31848910
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: KINENERG !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1      29.00319995
+       2      -0.16801094     0.80812795
+       3       0.00000000     0.00000000     2.52873120
+       4      -0.00000000    -0.00000000     0.00000000     2.52873120
+       6      -0.00841638     0.07051738     0.14709092     0.11492002
+       7      -0.00841638     0.07051738    -0.14709092     0.11492002
+
+               Column   5     Column   6     Column   7
+       5       2.52873120
+       6       0.00000000     0.76003186
+       7       0.00000000    -0.00397987     0.76003186
+    ==== End of matrix output ====
+
+
+                        +---------------------------------+
+                        ! Integrals of operator: POTENERG !
+                        +---------------------------------+
+
+ Symmetry of operator:  A  ( 1)
+
+               Column   1     Column   2     Column   3     Column   4
+       1      61.58059536
+       2       7.41082188    10.00907123
+       3       0.00000000     0.00000000     9.98755051
+       4       0.01447384     0.17689025     0.00000000     9.94404295
+       6       1.23168590     2.97722724     1.82224107     1.47178828
+       7       1.23168590     2.97722724    -1.82224107     1.47178828
+
+               Column   5     Column   6     Column   7
+       5       9.87587607
+       6       0.00000000     5.30020293
+       7       0.00000000     1.06716604     5.30020293
+    ==== End of matrix output ====
+
+ Threshold for neglecting two-electron integrals:  1.00D-12
+ HERMIT - Number of two-electron integrals written:         228 ( 56.2% )
+ HERMIT - Megabytes written:                              0.007
+
+ >>>> Total CPU  time used in HERMIT:   0.01 seconds
+ >>>> Total wall time used in HERMIT:   0.01 seconds
+
+
+                        .----------------------------------.
+                        | End of Integral Section (HERMIT) |
+                        `----------------------------------'
+
+
+
+                   .--------------------------------------------.
+                   | Starting in Wave Function Section (SIRIUS) |
+                   `--------------------------------------------'
+
+
+ *** Output from Huckel module :
+
+     Using EWMO model:          T
+     Using EHT  model:          F
+     Number of Huckel orbitals each symmetry:    7
+
+ EWMO - Energy Weighted Maximum Overlap - is a Huckel type method,
+        which normally is better than Extended Huckel Theory.
+ Reference: Linderberg and Ohrn, Propagators in Quantum Chemistry (Wiley, 1973)
+
+ Huckel EWMO eigenvalues for symmetry :  1
+          -20.683209      -1.522254      -0.771092      -0.695136      -0.616200
+           -0.278569      -0.213441
+
+ **********************************************************************
+ *SIRIUS* a direct, restricted step, second order MCSCF program       *
+ **********************************************************************
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+ Title lines from ".mol" input file:
+     ---                                                                     
+     ---                                                                     
+
+ Print level on unit LUPRI =   2 is   0
+ Print level on unit LUW4  =   2 is   5
+
+@    Restricted, closed shell Hartree-Fock calculation.
+
+@    Time-dependent Hartree-Fock calculation (random phase approximation).
+
+ Initial molecular orbitals are obtained according to
+ ".MOSTART EWMO  " input option
+
+     Wave function specification
+     ============================
+@    Wave function type        >>> HF <<<
+@    Number of closed shell electrons          10
+@    Number of electrons in active shells       0
+@    Total charge of the molecule               0
+
+@    Spin multiplicity and 2 M_S                1         0
+@    Total number of symmetries                 1 (point group: C1 )
+@    Reference state symmetry                   1 (irrep name : A  )
+
+     Orbital specifications
+     ======================
+@    Abelian symmetry species          All |    1
+@                                          |  A  
+                                       --- |  ---
+@    Occupied SCF orbitals               5 |    5
+@    Secondary orbitals                  2 |    2
+@    Total number of orbitals            7 |    7
+@    Number of basis functions           7 |    7
+
+     Optimization information
+     ========================
+@    Number of configurations                 1
+@    Number of orbital rotations             10
+     ------------------------------------------
+@    Total number of variables               11
+
+     Maximum number of Fock   iterations      0
+     Maximum number of DIIS   iterations     60
+     Maximum number of QC-SCF iterations     60
+     Threshold for SCF convergence     1.00D-05
+
+
+ ***********************************************
+ ***** DIIS acceleration of SCF iterations *****
+ ***********************************************
+
+ C1-DIIS algorithm; max error vectors =    8
+
+ Iter      Total energy        Error norm    Delta(E)  DIIS dim.
+ -----------------------------------------------------------------------------
+     (Precalculated two-electron integrals are transformed to P-supermatrix elements.
+      Threshold for discarding integrals :  1.00D-12 )
+@  1    -74.8838784167        7.27281D-01   -7.49D+01    1
+      Virial theorem: -V/T =      2.004387
+@      MULPOP O      -0.47; H       0.24; H       0.24; 
+ -----------------------------------------------------------------------------
+@  2    -74.9390985821        1.79877D-01   -5.52D-02    2
+      Virial theorem: -V/T =      2.010065
+@      MULPOP O      -0.21; H       0.11; H       0.11; 
+ -----------------------------------------------------------------------------
+@  3    -74.9419417201        3.45651D-02   -2.84D-03    3
+      Virial theorem: -V/T =      2.008195
+@      MULPOP O      -0.26; H       0.13; H       0.13; 
+ -----------------------------------------------------------------------------
+@  4    -74.9420796210        1.94968D-03   -1.38D-04    4
+      Virial theorem: -V/T =      2.008195
+@      MULPOP O      -0.25; H       0.13; H       0.13; 
+ -----------------------------------------------------------------------------
+@  5    -74.9420799267        1.39275D-04   -3.06D-07    5
+      Virial theorem: -V/T =      2.008167
+@      MULPOP O      -0.25; H       0.13; H       0.13; 
+ -----------------------------------------------------------------------------
+@  6    -74.9420799311        2.22065D-05   -4.37D-09    6
+      Virial theorem: -V/T =      2.008168
+@      MULPOP O      -0.25; H       0.13; H       0.13; 
+ -----------------------------------------------------------------------------
+@  7    -74.9420799312        3.02314D-07   -1.07D-10    7
+
+@ *** DIIS converged in   7 iterations !
+@     Converged SCF energy, gradient:    -74.942079931208    3.02D-07
+    - total time used in SIRFCK :              0.00 seconds
+
+
+ *** SCF orbital energy analysis ***
+
+ Number of electrons :   10
+ Orbital occupations :    5
+
+ Sym       Hartree-Fock orbital energies
+
+1 A     -20.26289163    -1.20969738    -0.54796466    -0.43652721    -0.38758673
+          0.47761871     0.58813927
+
+    E(LUMO) :     0.47761871 au (symmetry 1)
+  - E(HOMO) :    -0.38758673 au (symmetry 1)
+  ------------------------------------------
+    gap     :     0.86520543 au
+
+ >>> Writing SIRIFC interface file
+
+ >>>> CPU and wall time for SCF :       0.207       0.029
+
+
+                       .-----------------------------------.
+                       | >>> Final results from SIRIUS <<< |
+                       `-----------------------------------'
+
+
+@    Spin multiplicity:           1
+@    Spatial symmetry:            1 ( irrep  A   in C1  )
+@    Total charge of molecule:    0
+
+@    Final HF energy:             -74.942079931208                 
+@    Nuclear repulsion:             8.002367061811
+@    Electronic energy:           -82.944446993019
+
+@    Final gradient norm:           0.000000302314
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+File label for MO orbitals:  22Sep15   FOCKDIIS
+
+ (Only coefficients >0.0100 are printed.)
+
+ Molecular orbitals for symmetry species 1  (A  )
+ ------------------------------------------------
+
+    Orbital         1        2        3        4        5        6        7
+   1 O   :1s    -0.9944   0.2392   0.0000  -0.0937   0.0000  -0.1116  -0.0000
+   2 O   :1s    -0.0241  -0.8857  -0.0000   0.4796  -0.0000   0.6696   0.0000
+   3 O   :2px    0.0000  -0.0000  -0.6073  -0.0000   0.0000   0.0000  -0.9192
+   4 O   :2py   -0.0032  -0.0859   0.0000  -0.7474   0.0000   0.7385   0.0000
+   5 O   :2pz   -0.0000   0.0000  -0.0000  -0.0000  -1.0000   0.0000  -0.0000
+   6 H   :1s     0.0046  -0.1440  -0.4530  -0.3295   0.0000  -0.7098   0.7325
+   7 H   :1s     0.0046  -0.1440   0.4530  -0.3295  -0.0000  -0.7098  -0.7325
+
+
+                       .------------------------------------.
+                       | <<< SIRIUS Population Analysis >>> |
+                       `------------------------------------'
+
+
+                       Energy analysis
+        ----------------------------------------------------------
+           Total energy                    -74.9420799312
+           Kinetic energy                   74.3349251674
+           Potential energy               -149.2770050986
+           Nuclear repulsion energy          8.0023670618
+           -V/T                              2.008168
+        ----------------------------------------------------------
+
+
+      Total net, overlap, and gross populations, summed over all MOs
+      Type:     MULPOP 
+
+           O         H         H         Gross 
+
+ O         7.7892    0.2320    0.2320    8.2531
+ H         0.2320    0.6691   -0.0276    0.8734
+ H         0.2320   -0.0276    0.6691    0.8734
+
+      Total gross population of AO basis functions, summed over all MOs
+      distributed over AO types for each center
+      Type:     MULPOP 
+
+           O         H         H     
+
+      s    3.8711    0.8734    0.8734
+
+   2px     1.0330    0.0000    0.0000
+   2py     1.3490    0.0000    0.0000
+   2pz     2.0000    0.0000    0.0000
+      p    4.3820    0.0000    0.0000
+
+    All    8.2531    0.8734    0.8734
+
+
+           Total atomic gross populations
+           ------------------------------
+
+@      MULPOP O      -0.25; H       0.13; H       0.13; 
+
+ Sum = total charge:    0.0000
+
+
+
+ >>>> Total CPU  time used in SIRIUS :      0.27 seconds
+ >>>> Total wall time used in SIRIUS :      0.04 seconds
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+
+                     .---------------------------------------.
+                     | End of Wave Function Section (SIRIUS) |
+                     `---------------------------------------'
+
+
+
+                 .------------------------------------------------.
+                 | Starting in Dynamic Property Section (RESPONS) |
+                 `------------------------------------------------'
+
+
+ ------------------------------------------------------------------------------
+  RESPONSE  -  an MCSCF, MC-srDFT, DFT, and SOPPA response property program
+ ------------------------------------------------------------------------------
+
+
+ <<<<<<<<<< OUTPUT FROM RESPONSE INPUT PROCESSING >>>>>>>>>>
+
+
+
+
+   SCF energy         :      -74.942079931208113
+ -- inactive part     :      -82.944446993018886
+ -- nuclear repulsion :        8.002367061810769
+
+
+                     ***************************************
+                     *** RHF response calculation (TDHF) ***
+                     ***************************************
+
+
+ >>>> Total CPU  time used in RESPONSE:   0.00 seconds
+ >>>> Total wall time used in RESPONSE:   0.00 seconds
+
+
+                   .-------------------------------------------.
+                   | End of Dynamic Property Section (RESPONS) |
+                   `-------------------------------------------'
+
+
+ Center of mass dipole origin  :    0.000000   -0.000000    0.000000
+
+ Center of mass gauge origin   :    0.000000   -0.000000    0.000000
+
+
+                 .------------------------------------------------.
+                 | Starting in Static Property Section (ABACUS) - |
+                 `------------------------------------------------'
+
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+
+   ***************************************************************************
+   ************************ FINAL RESULTS from ABACUS ************************
+   ***************************************************************************
+
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
+
+
+                             Molecular geometry (au)
+                             -----------------------
+
+ O          0.0000000000           -0.1432258166            0.0000000000
+ H          1.6380368404            1.1365488225            0.0000000000
+ H         -1.6380368404            1.1365488225            0.0000000000
+
+
+
+
+
+                        Molecular wave function and energy
+                        ----------------------------------
+
+     Spatial symmetry   1 ( A   )
+     Spin multiplicity  1
+     2 * M_S            0
+     State number       1
+     Total charge       0
+
+     Total energy        -74.9420799312 au (Hartrees)
+                         -2039.27773050 eV
+                           -196760.4005 kJ/mol
+                            -47026.8644 kcal/mol
+
+
+                   Scalar Breit-Pauli relativistic corrections
+                   -------------------------------------------
+
+     Darwin correction:                          0.1295916552 au
+     Mass-velocity correction:                  -0.1671135814 au
+
+     Total relativistic correction:             -0.0375219262 au (0.0501%)
+     Non-relativistic + relativistic energy:   -74.9796018574 au
+
+
+
+      (Note that these corrections are NOT included in the results below.)
+
+
+                                  Dipole moment
+                                  -------------
+
+                 au               Debye          C m (/(10**-30)
+              0.603521           1.533998           5.116866
+
+
+                             Dipole moment components
+                             ------------------------
+
+                 au               Debye          C m (/(10**-30)
+
+      x      0.00000000         0.00000000         0.00000000
+      y      0.60352127         1.53399796         5.11686641
+      z      0.00000000         0.00000000         0.00000000
+
+
+   Units:   1 a.u. =   2.54175 Debye 
+            1 a.u. =   8.47835 (10**-30) C m (SI)
+
+
+
+
+   Interatomic separations (in Angstrom):
+   --------------------------------------
+
+            O           H           H     
+            ------      ------      ------
+ O     :    0.000000
+ H     :    1.100000    0.000000
+ H     :    1.100000    1.733624    0.000000
+
+
+  Max    interatomic separation is    1.7336 Angstrom (    3.2761 Bohr)
+  between atoms    3 and    2, "H     " and "H     ".
+
+  Min HX interatomic separation is    1.1000 Angstrom (    2.0787 Bohr)
+
+
+  Bond distances (Angstrom):
+  --------------------------
+
+                  atom 1     atom 2       distance
+                  ------     ------       --------
+  bond distance:  H          O            1.100000
+  bond distance:  H          O            1.100000
+
+
+  Bond angles (degrees):
+  ----------------------
+
+                  atom 1     atom 2     atom 3         angle
+                  ------     ------     ------         -----
+  bond angle:     H          O          H            104.000
+
+
+
+
+ CPU time statistics for ABACUS
+ ------------------------------
+
+
+
+
+ >>>> Total CPU  time used in ABACUS:   0.13 seconds
+ >>>> Total wall time used in ABACUS:   0.02 seconds
+
+
+                   .-------------------------------------------.
+                   | End of Static Property Section (ABACUS) - |
+                   `-------------------------------------------'
+
+ >>>> Total CPU  time used in DALTON:   0.44 seconds
+ >>>> Total wall time used in DALTON:   0.09 seconds
+
+ 
+     Date and time (Linux)  : Tue Sep 22 23:08:15 2015
+     Host name              : copper                                  
