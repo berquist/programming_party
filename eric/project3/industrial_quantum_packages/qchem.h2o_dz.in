@@ -1,0 +1,17 @@
+$rem
+ method hf
+ basis dz
+ scf_convergence 10
+ thresh 14
+ scf_guess core
+ input_bohr true
+ symmetry false
+ sym_ignore true
+$end
+
+$molecule
+ 0 1
+O   0.000000000000  -0.143225816552   0.000000000000
+H   1.638036840407   1.136548822547  -0.000000000000
+H  -1.638036840407   1.136548822547  -0.000000000000
+$end
