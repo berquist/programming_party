@@ -6,6 +6,7 @@ from __future__ import division
 import numpy as np
 import numpy.linalg as npl
 
+from ..molecule import Molecule
 from ..utils import print_mat
 
 
@@ -119,6 +120,8 @@ if __name__ == "__main__":
 
     stub = args.stub + "_"
 
+    mol = Molecule(stub + "geom.dat")
+
     filename_enuc = stub + "enuc.dat"
     filename_s = stub + "s.dat"
     filename_t = stub + "t.dat"
@@ -201,3 +204,49 @@ if __name__ == "__main__":
         f = f_prime
 
         iteration += 1
+
+    # At convergence, the Fock matrix should be diagonal in the MO
+    # basis.
+    f_mo = np.dot(c.T, np.dot(f, c))
+
+    print_mat(f_mo)
+
+    # Save things to disk for use in other routines.
+    # np.save(mat_eri, "eri.np")
+    # np.save(c, "c.np")
+    # np.save(f_mo, "f_mo.np")
+
+    mat_dipole_x = parse_int_file_2(stub + "mux.dat", dim)
+    mat_dipole_y = parse_int_file_2(stub + "muy.dat", dim)
+    mat_dipole_z = parse_int_file_2(stub + "muz.dat", dim)
+
+    dipole_elec = 2 * np.array([np.sum(d * mat_dipole_x),
+                                np.sum(d * mat_dipole_y),
+                                np.sum(d * mat_dipole_z)])
+    dipole_moment_elec = npl.norm(dipole_elec)
+
+    dipole_nuc = mol.calc_dipole_nuc()
+    dipole_moment_nuc = npl.norm(dipole_nuc)
+
+    dipole_total = dipole_elec + dipole_nuc
+    dipole_moment_total = npl.norm(dipole_total)
+
+    print("Dipole components (electronic, a.u.):")
+    print("X: {:20.12f}".format(dipole_elec[0]))
+    print("Y: {:20.12f}".format(dipole_elec[1]))
+    print("Z: {:20.12f}".format(dipole_elec[2]))
+
+    print("Dipole components (nuclear, a.u.):")
+    print("X: {:20.12f}".format(dipole_nuc[0]))
+    print("Y: {:20.12f}".format(dipole_nuc[1]))
+    print("Z: {:20.12f}".format(dipole_nuc[2]))
+
+    print("Dipole components (total, a.u.):")
+    print("X: {:20.12f}".format(dipole_total[0]))
+    print("Y: {:20.12f}".format(dipole_total[1]))
+    print("Z: {:20.12f}".format(dipole_total[2]))
+
+    print("Dipole moment (a.u.):")
+    print("electronic: {}".format(dipole_moment_elec))
+    print("nuclear   : {}".format(dipole_moment_nuc))
+    print("total     : {}".format(dipole_moment_total))

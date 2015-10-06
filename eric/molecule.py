@@ -9,8 +9,8 @@ from __future__ import division
 import numpy as np
 import numpy.linalg as npl
 
-import periodic_table as pt
-import constants as c
+from . import periodic_table as pt
+from . import constants as c
 
 
 class Molecule(object):
@@ -49,7 +49,7 @@ class Molecule(object):
         for idx, line in enumerate(rawfile[1:]):
             l = line.split()
             self.charges[idx] = int(float(l[0]))
-            self.coords[idx] = map(float, l[1:])
+            self.coords[idx] = list(map(float, l[1:]))
         handle.close()
 
         # with open(filename) as handle:
@@ -356,3 +356,11 @@ class Molecule(object):
 
         # Calculate the angle on the fly. Don't use any stored values.
         return self._calc_angle_oop(i, j, k, l)
+
+    def calc_dipole_nuc(self, origin=np.array([0., 0., 0.])):
+        """Return the nuclear contribution to the total dipole moment in
+        atomic units.
+        """
+
+        return sum(self.charges[i] * (self.coords[i] - origin)
+                   for i in range(self.size))
