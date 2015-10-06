@@ -109,6 +109,31 @@ def rmsd_density(D_new, D_old):
     return np.sqrt(np.sum((D_new - D_old)**2))
 
 
+def population_analysis(mol, pop_mat, basis_function_indices):
+    """Perform population analysis..."""
+
+    charges = []
+
+    for i in range(mol.size):
+
+        # The basis function indices for each atom.
+        bfi = basis_function_indices[i]
+
+        # Take the trace of the "population" matrix block
+        # corresponding to each individual atom.  Assuming that the
+        # indices are in order, and the block is bounded by the first
+        # and last elements of bfi. Is there a better way to do fancy
+        # indexing here?
+        tr = np.trace(pop_mat[bfi[0]:bfi[-1]+1,
+                              bfi[0]:bfi[-1]+1])
+        # Definition of the final charge.
+        charge = mol.charges[i] - 2 * tr
+
+        charges.append(charge)
+
+    return np.asarray(charges)
+
+
 if __name__ == "__main__":
 
     args = getargs()
@@ -247,6 +272,35 @@ if __name__ == "__main__":
     print("Z: {:20.12f}".format(dipole_total[2]))
 
     print("Dipole moment (a.u.):")
-    print("electronic: {}".format(dipole_moment_elec))
-    print("nuclear   : {}".format(dipole_moment_nuc))
-    print("total     : {}".format(dipole_moment_total))
+    print("electronic: {:20.12f}".format(dipole_moment_elec))
+    print("nuclear   : {:20.12f}".format(dipole_moment_nuc))
+    print("total     : {:20.12f}".format(dipole_moment_total))
+
+    # This is cheating. How to determine this automatically without
+    # any a priori knowledge of the basis set?
+    basis_function_indices = [
+        [0, 1, 2, 3, 4,],
+        [5,],
+        [6,],
+    ]
+
+    # Mulliken population analysis.
+
+    mat_mulliken = np.dot(d, mat_s)
+    charges_mulliken = population_analysis(mol, mat_mulliken, basis_function_indices)
+
+    print("Population analysis (Mulliken):")
+    print(" Charges:")
+    for i in range(mol.size):
+        print(" {:3d} {:3d} {:20.12f}".format(i + 1, mol.charges[i], charges_mulliken[i]))
+
+    # Loewdin population analysis.
+
+    # What's this equation??? Find me!
+    mat_loewdin = mat_mulliken
+    charges_loewdin = population_analysis(mol, mat_loewdin, basis_function_indices)
+
+    print("Population analysis (Loewdin):")
+    print(" Charges:")
+    for i in range(mol.size):
+        print(" {:3d} {:3d} {:20.12f}".format(i + 1, mol.charges[i], charges_loewdin[i]))
