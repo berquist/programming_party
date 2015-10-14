@@ -1,5 +1,26 @@
 #include "../utils.hpp"
 
+double calc_elec_energy(arma::mat& P, arma::mat& H, arma::mat& F) {
+  return arma::accu(P % (H + F));
+}
+
+void build_density(arma::mat& P, arma::mat& C, size_t NOcc) {
+  P = C.cols(0, NOcc-1) * C.cols(0, NOcc-1).t();
+}
+
+void build_fock(arma::mat& F, arma::mat& P, arma::mat& H, arma::vec& ERI) {
+  for (size_t mu = 0; mu < H.n_rows; mu++) {
+    for (size_t nu = 0; nu < H.n_cols; nu++) {
+      F(mu, nu) = H(mu, nu);
+      for (size_t lm = 0; lm < P.n_rows; lm++) {
+        for (size_t sg = 0; sg < P.n_cols; sg++) {
+          F(mu, nu) += P(lm, sg) * (2*ERI(idx4(mu, nu, lm, sg)) - ERI(idx4(mu, lm, nu, sg)));
+        }
+      }
+    }
+  }
+}
+
 int main()
 {
 
@@ -64,6 +85,12 @@ int main()
   }
 
   fclose(ERI_file);
+
+  printf("Overlap Integrals:\n");
+  print_arma_mat(S);
+
+  H = T + V;
+  arma::eig_sym(Lam_S_vec, L_S, S);
 
   double thresh_E = 1.0e-15;
   double thresh_D = 1.0e-7;
