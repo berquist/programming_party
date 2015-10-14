@@ -293,14 +293,17 @@ if __name__ == "__main__":
     print(" Charges:")
     for i in range(mol.size):
         print(" {:3d} {:3d} {:20.12f}".format(i + 1, mol.charges[i], charges_mulliken[i]))
+    print(sum(charges_mulliken))
+    print(" trace: {}".format(np.trace(mat_mulliken)))
 
     # Loewdin population analysis.
 
-    # What's this equation??? Find me!
-    mat_loewdin = mat_mulliken
+    mat_loewdin = np.dot(npl.inv(symm_orthog), np.dot(d, npl.inv(symm_orthog)))
     charges_loewdin = population_analysis(mol, mat_loewdin, basis_function_indices)
 
     print("Population analysis (Loewdin):")
     print(" Charges:")
     for i in range(mol.size):
         print(" {:3d} {:3d} {:20.12f}".format(i + 1, mol.charges[i], charges_loewdin[i]))
+    print(sum(charges_loewdin))
+    print(" trace: {}".format(np.trace(mat_loewdin)))
