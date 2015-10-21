@@ -31,3 +31,4 @@ dist/
 # Executables
 *.exe
 *.app
+*.x
