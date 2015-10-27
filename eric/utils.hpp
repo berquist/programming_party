@@ -1,6 +1,7 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include <cmath>
 #include <armadillo>
 
 // from diag.cpp:

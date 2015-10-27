@@ -21,6 +21,15 @@ void build_fock(arma::mat& F, arma::mat& P, arma::mat& H, arma::vec& ERI) {
   }
 }
 
+double rmsd_density(arma::mat& P_new, arma::mat& P_old) {
+  return sqrt(arma::accu(arma::pow((P_new - P_old), 2)));
+}
+
+void mix_density(arma::mat& P_new, arma::mat& P_old, double alpha) {
+  // alpha must be in the range [0, 1)
+  P_new = ((1.0 - alpha) * P_new) + (alpha * P_old);
+}
+
 int main()
 {
 
@@ -39,7 +48,7 @@ int main()
   fscanf(enuc_file, "%lf", &Vnn);
   fclose(enuc_file);
 
-  printf("Nuclear Repulsion Energy: %12f\n", Vnn);
+  printf("Nuclear repulsion energy =  %12f\n", Vnn);
 
   arma::mat S(NBasis, NBasis);
   arma::mat T(NBasis, NBasis);
@@ -88,17 +97,40 @@ int main()
 
   printf("Overlap Integrals:\n");
   print_arma_mat(S);
+  printf("Kinetic-Energy Integrals:\n");
+  print_arma_mat(T);
+  printf("Nuclear Attraction Integrals\n");
+  print_arma_mat(V);
 
   H = T + V;
+
+  printf("Core Hamiltonian:\n");
+  print_arma_mat(H);
+
   arma::eig_sym(Lam_S_vec, L_S, S);
+  // What's wrong with this?
+  // Lam_S_mat = Lam_S_vec * arma::eye<mat>(Lam_S_vec.n_elem, Lam_S_vec.n_elem);
+  Lam_S_mat = arma::diagmat(Lam_S_vec);
+  arma::mat Lam_sqrt_inv = arma::sqrt(arma::inv(Lam_S_mat));
+  arma::mat symm_orthog = L_S * Lam_sqrt_inv * L_S.t();
+
+  printf("S^-1/2 Matrix:\n");
+  print_arma_mat(symm_orthog);
+
+  printf("Initial F' Matrix:\n");
+  printf("Initial C Matrix:\n");
+  printf("Initial Density Matrix:\n");
 
   double thresh_E = 1.0e-15;
   double thresh_D = 1.0e-7;
-  size_t iteration = 0;
+  size_t iteration = 1;
   size_t max_iterations = 1024;
   double E_total, E_elec_old, E_elec_new, delta_E, rmsd_D;
 
   while (iteration < max_iterations) {
+    if (iteration == 1) {
+      printf("Fock Matrix:\n");
+    }
     iteration++;
   }
 
