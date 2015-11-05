@@ -237,9 +237,10 @@ if __name__ == "__main__":
     print_mat(f_mo)
 
     # Save things to disk for use in other routines.
-    # np.save(mat_eri, "eri.np")
-    # np.save(c, "c.np")
-    # np.save(f_mo, "f_mo.np")
+    np.savez_compressed("H.npz", mat_h)
+    np.savez_compressed("TEI_AO.npz", mat_eri)
+    np.savez_compressed("C.npz", c)
+    np.savez_compressed("F_MO.npz", f_mo)
 
     mat_dipole_x = parse_int_file_2(stub + "mux.dat", dim)
     mat_dipole_y = parse_int_file_2(stub + "muy.dat", dim)
