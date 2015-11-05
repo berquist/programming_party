@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import numpy as np
+
+
 def idx2(i, j):
     """Returns the compound index for two values.
     """
@@ -35,3 +38,14 @@ def print_mat(mat):
             print('{0:12.7f}'.format(mat[i][j]), end='')
         print('', end='\n')
     print('', end='\n')
+
+    return
+
+def np_load(filename):
+    arr = np.load(filename)
+    if isinstance(arr, np.lib.npyio.NpzFile):
+        # Make the assumption that there's only a single array
+        # present, even though *.npz files can hold multiple
+        # arrays.
+        arr = arr.items()[0][1]
+    return arr

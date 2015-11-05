@@ -3,6 +3,7 @@ dist/
 
 # Python
 *.py[co]
+*.npz
 
 # Compiled Object files
 *.slo
