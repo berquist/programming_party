@@ -95,6 +95,12 @@ int main()
 
   fclose(ERI_file);
 
+  double thresh_E = 1.0e-15;
+  double thresh_D = 1.0e-7;
+  size_t iteration = 0;
+  size_t max_iterations = 1024;
+  double E_total, E_elec_old, E_elec_new, delta_E, rmsd_D;
+
   printf("Overlap Integrals:\n");
   print_arma_mat(S);
   printf("Kinetic-Energy Integrals:\n");
@@ -109,30 +115,69 @@ int main()
 
   arma::eig_sym(Lam_S_vec, L_S, S);
   // What's wrong with this?
-  // Lam_S_mat = Lam_S_vec * arma::eye<mat>(Lam_S_vec.n_elem, Lam_S_vec.n_elem);
+  // Lam_S_mat = Lam_S_vec * arma::eye<arma::mat>(Lam_S_vec.n_elem, Lam_S_vec.n_elem);
   Lam_S_mat = arma::diagmat(Lam_S_vec);
   arma::mat Lam_sqrt_inv = arma::sqrt(arma::inv(Lam_S_mat));
   arma::mat symm_orthog = L_S * Lam_sqrt_inv * L_S.t();
+  F_prime = symm_orthog.t() * H * symm_orthog;
+  arma::eig_sym(eps_vec, C_prime, F_prime);
+  C = symm_orthog * C_prime;
+  build_density(D, C, NOcc);
 
   printf("S^-1/2 Matrix:\n");
   print_arma_mat(symm_orthog);
-
   printf("Initial F' Matrix:\n");
+  print_arma_mat(F_prime);
   printf("Initial C Matrix:\n");
+  print_arma_mat(C);
   printf("Initial Density Matrix:\n");
+  print_arma_mat(D);
 
-  double thresh_E = 1.0e-15;
-  double thresh_D = 1.0e-7;
-  size_t iteration = 1;
-  size_t max_iterations = 1024;
-  double E_total, E_elec_old, E_elec_new, delta_E, rmsd_D;
+  E_elec_new = calc_elec_energy(D, H, H);
+  E_total = E_elec_new + Vnn;
+  delta_E = E_total;
+  printf(" Iter        E(elec)              E(tot)               Delta(E)             RMS(D)\n");
+  printf("%4d %20.12f %20.12f %20.12f\n",
+         iteration, E_elec_new, E_total, delta_E);
+  iteration++;
 
   while (iteration < max_iterations) {
+    build_fock(F, D, H, ERI);
+    F_prime = symm_orthog.t() * F * symm_orthog;
+    arma::eig_sym(eps_vec, C_prime, F_prime);
+    C = symm_orthog * C_prime;
+    D_old = D;
+    build_density(D, C, NOcc);
+    E_elec_old = E_elec_new;
+    E_elec_new = calc_elec_energy(D, H, F);
+    E_total = E_elec_new + Vnn;
     if (iteration == 1) {
       printf("Fock Matrix:\n");
+      print_arma_mat(F);
+      printf("%4d %20.12f %20.12f %20.12f\n",
+             iteration, E_elec_new, E_total, delta_E);
+    } else {
+      printf("%4d %20.12f %20.12f %20.12f %20.12f\n",
+             iteration, E_elec_new, E_total, delta_E, rmsd_D);
     }
+    delta_E = E_elec_new - E_elec_old;
+    rmsd_D = rmsd_density(D, D_old);
+    if (delta_E < thresh_E && rmsd_D < thresh_D) {
+      printf("Convergence achieved.\n");
+      break;
+    }
+    F = F_prime;
     iteration++;
   }
+
+  arma::mat F_MO = C.t() * F * C;
+
+  // Save the TEIs and MO coefficients/energies to disk
+  // for use in other routines.
+  H.save("H.mat", arma::arma_ascii);
+  ERI.save("TEI_AO.mat", arma::arma_ascii);
+  C.save("C.mat", arma::arma_ascii);
+  F_MO.save("F_MO.mat", arma::arma_ascii);
 
   return 0;
 
