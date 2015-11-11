@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 from __future__ import division
+
+import sys
 
 import numpy as np
 import numpy.linalg as npl
@@ -18,6 +20,12 @@ def getargs():
 
     parser.add_argument('--stub', default="h2o_sto3g")
     parser.add_argument('--nelec', type=int, default=10)
+
+    parser.add_argument('--guess',
+                        choices=('hcore', 'gwh'),
+                        default='hcore',
+                        help="""How should the guess for the initial MO
+                        coefficients be obtained?""")
 
     args = parser.parse_args()
 
@@ -134,6 +142,28 @@ def population_analysis(mol, pop_mat, basis_function_indices):
     return np.asarray(charges)
 
 
+def guess_gwh(mat_h, mat_s, cx=1.75):
+    """From the core Hamiltonian and overlap matrices, form the matrix for
+    the generalized Wolfsberg-Helmholz approximation (DOI:
+    10.1063/1.1700580)
+
+    The default value of 1.75 is from the Q-Chem 4.3 manual.
+    """
+
+    assert mat_h.shape == mat_s.shape
+    nr, nc = mat_h.shape
+    assert nr == nc
+    mat_gwh = np.empty_like(mat_h)
+
+    for mu in range(nr):
+        for nu in range(nc):
+            mat_gwh[mu, nu] = mat_s[mu, nu] * (mat_h[mu, mu] + mat_h[nu, nu])
+
+    mat_gwh *= (cx / 2)
+
+    return mat_gwh
+
+
 if __name__ == "__main__":
 
     args = getargs()
@@ -176,7 +206,14 @@ if __name__ == "__main__":
     symm_orthog = np.dot(l_s, np.dot(lam_sqrt_inv, l_s.T))
     print("S^-1/2 Matrix:")
     print_mat(symm_orthog)
-    f_prime = np.dot(symm_orthog.T, np.dot(mat_h, symm_orthog))
+    if args.guess == "hcore":
+        f_prime = np.dot(symm_orthog.T, np.dot(mat_h, symm_orthog))
+    elif args.guess == "gwh":
+        mat_gwh = guess_gwh(mat_h, mat_s, cx=1.75)
+        f_prime = np.dot(symm_orthog.T, np.dot(mat_gwh, symm_orthog))
+    else:
+        print("Invalid guess.", file=sys.stderr)
+        sys.exit(1)
     print("Initial F' Matrix:")
     print_mat(f_prime)
     eps, c_prime = npl.eigh(f_prime)
