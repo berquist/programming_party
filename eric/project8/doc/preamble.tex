@@ -1,0 +1,28 @@
+\usepackage{amsmath}
+
+\usepackage[T1]{fontenc}
+\usepackage[sc]{mathpazo}
+\linespread{1.05} % Palatino needs more leading (space between lines)
+\usepackage[mathscr]{euscript}
+
+\usepackage{hyperref}
+\usepackage[activate={true,nocompatibility},
+            final,
+            kerning=true
+]{microtype}
+\usepackage{bm}
+\usepackage{braket}
+\usepackage[normalem]{ulem}
+\usepackage{paralist}
+\usepackage{setspace}
+\usepackage{xparse}
+\usepackage{graphicx}
+\usepackage{default}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+%\newcommand{\vect}[1]{
+\DeclareDocumentCommand{\vect}{m}{%
+        \ensuremath{\boldsymbol{\mathbf{#1}}}%
+}%

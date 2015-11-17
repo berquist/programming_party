@@ -1,0 +1,150 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{default}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{mdframed}
+\mdfdefinestyle{code}{
+  leftline=false,
+  rightline=false,
+  topline=true,
+  bottomline=true,
+  innerleftmargin=0pt,
+  innerrightmargin=0pt,
+  innertopmargin=5pt,
+  innerbottommargin=5pt,
+  skipabove=1ex,
+  skipbelow=1ex,
+  linecolor=black,
+  backgroundcolor=brown!20!white
+}
+\mdfdefinestyle{hidden}{
+  leftline=false,
+  rightline=false,
+  topline=false,
+  bottomline=false,
+  innerleftmargin=0pt,
+  innerrightmargin=0pt,
+  innertopmargin=0pt,
+  innerbottommargin=0pt,
+  skipabove=1ex,
+  skipbelow=1ex,
+}
+
+\usepackage{minted}
+\usemintedstyle{default}
+
+\renewcommand{\theFancyVerbLine} {\sffamily
+  \textcolor[rgb]{0.5,0.5,1.0}{\scriptsize
+    \oldstylenums{\arabic{FancyVerbLine}}}}
+
+\begin{document}
+
+\title{Direct Inversion in the Iterative Subspace}
+
+\section{Some Code}
+
+\subsection{Outline of the algorithm}
+
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS error matrix.
+ *
+ * The formula for the error matrix at the \textit{i}th iteration is:
+ *  $e_{i}=F_{i}D_{i}S-SD_{i}F_{i}$
+ */
+arma::mat build_error_matrix(const arma::mat &F,
+                             const arma::mat &D,
+                             const arma::mat &S) {
+  return (F*D*S) - (S*D*F);
+}
+\end{minted}
+
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS B matrix, or ``$A$'' in $Ax=b$.
+ */
+arma::mat build_B_matrix(const deque< arma::mat > &e) {
+  int NErr = e.size();
+  arma::mat B(NErr + 1, NErr + 1);
+  B(NErr, NErr) = 0.0;
+  for (int a = 0; a < NErr; a++) {
+    B(a, NErr) = B(NErr, a) = -1.0;
+    for (int b = 0; b < a + 1; b++)
+      B(a, b) = B(b, a) = arma::dot(e[a].t(),  e[b]);
+  }
+  return B;
+}
+\end{minted}
+
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the extrapolated Fock matrix from the Fock vector.
+ *
+ * The formula for the extrapolated Fock matrix is:
+ *  $F^{\prime}=\sum_{k}^{m}c_{k}F_{k}$
+ * where there are $m$ elements in the Fock and error vectors.
+ */
+void build_extrap_fock(arma::mat &F_extrap,
+                       const arma::vec &diis_coeffs,
+                       const deque< arma::mat > &diis_fock_vec) {
+  const int len = diis_coeffs.n_elem - 1;
+  F_extrap.zeros();
+  for (int i = 0; i < len; i++)
+    F_extrap += (diis_coeffs(i) * diis_fock_vec[i]);
+}
+\end{minted}
+
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS "zero" vector, or "$b$" in $Ax=b$.
+ */
+arma::vec build_diis_zero_vec(const int len) {
+  arma::vec diis_zero_vec(len, arma::fill::zeros);
+  diis_zero_vec(len - 1) = -1.0;
+  return diis_zero_vec;
+}
+\end{minted}
+
+\begin{minted}[linenos,gobble=2]{c++}
+  /*!
+   * Prepare structures necessary for DIIS extrapolation.
+   */
+  int NErr;
+  deque< arma::mat > diis_error_vec;
+  deque< arma::mat > diis_fock_vec;
+  int max_diis_length = 6;
+  arma::mat diis_error_mat;
+  arma::vec diis_zero_vec;
+  arma::mat B;
+  arma::vec diis_coeff_vec;
+\end{minted}
+
+\begin{minted}[linenos,gobble=4]{c++}
+    // Start collecting elements for DIIS once we're past the first iteration.
+    if (iter > 0) {
+      diis_error_mat = build_error_matrix(F, D, S);
+      NErr = diis_error_vec.size();
+      if (NErr >= max_diis_length) {
+        diis_error_vec.pop_back();
+        diis_fock_vec.pop_back();
+      }
+      diis_error_vec.push_front(diis_error_mat);
+      diis_fock_vec.push_front(F);
+      NErr = diis_error_vec.size();
+      // Perform DIIS extrapolation only if we have 2 or more points.
+      if (NErr >= 2) {
+        diis_zero_vec = build_diis_zero_vec(NErr + 1);
+        B = build_B_matrix(diis_error_vec);
+        diis_coeff_vec = arma::solve(B, diis_zero_vec);
+        build_extrap_fock(F, diis_coeff_vec, diis_fock_vec);
+      }
+    }
+\end{minted}
+
+\end{document}

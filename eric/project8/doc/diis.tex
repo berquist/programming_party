@@ -1,0 +1,521 @@
+%%% Compile me as follows:
+%%% latexmk -pdf -pdflatex="pdflatex -shell-escape" diis.tex
+
+\documentclass[10pt,compress,red]{beamer}
+\usetheme{Pittsburgh}
+
+\input{./preamble.tex}
+
+\usepackage{minted}
+\usemintedstyle{default}
+
+\renewcommand{\theFancyVerbLine} {\sffamily
+  \textcolor[rgb]{0.5,0.5,0.7}{\scriptsize
+    \oldstylenums{\arabic{FancyVerbLine}}}}
+
+\makeatletter
+\newcommand\listofframes{\@starttoc{lbf}}
+\makeatother
+
+\addtobeamertemplate{frametitle}{}{%
+  \addcontentsline{lbf}{section}{\protect\makebox[2em][l]{%
+    \protect\usebeamercolor[fg]{structure}\insertframenumber\hfill}%
+  \insertframetitle\par}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Direct Inversion in the Iterative Subspace}
+\subtitle{(DIIS)}
+\author{Eric Berquist}
+\institute{University of Pittsburgh}
+\date{October 7th, 2014}
+
+\begin{document}
+
+\frame{
+  \titlepage
+}
+
+\begin{frame}
+  \tableofcontents
+  % \listofframes
+\end{frame}
+
+\section{Some Theory}
+
+\begin{frame}
+  \frametitle{The Self-Consistent Field Procedure}
+  \begin{itemize}
+    \item Calculate all one- and two-electron integrals.
+    \item Generate a suitable start guess for the MO coefficients.
+    \item Form the initial density matrix.
+    \item Form the Fock matrix as the core (one-electron) integrals +
+      the density matrix times the two-electron integrals.
+    \item Diagonalize the Fock matrix. The eigenvectors contain the
+      new MO coefficients.
+    \item Form the new density matrix. If it is sufficiently close to
+      the previous density matrix, we are done, otherwise go to step
+      4.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Self-Consistent Field Procedure}
+\begin{align}
+  \label{eq:1}
+  \vect{S} \vect{L}_{S} &= \vect{L}_{S} \Lambda_{S} \\
+  \label{eq:2}
+  \vect{S}^{-1/2} &\equiv \vect{L}_{S} \Lambda^{-1/2} \vect{\tilde{L}}_{S} \\
+  \label{eq:3}
+  \vect{F}_{0}^{'} &\equiv \vect{\tilde{S}}^{-1/2} \vect{H}^{\textrm{core}} \vect{S}^{-1/2} \\
+  \label{eq:4}
+  \vect{F}_{0}^{'} \vect{C}_{0}^{'} &= \vect{C}_{0}^{'} \epsilon_{0} \\
+  \label{eq:5}
+  \vect{C}_{0} &= \vect{S}^{-1/2} \vect{C}_{0}^{'} \\
+  \label{eq:6}
+  (\vect{D}_{0})_{\mu\nu} &= \sum_{m}^{\textrm{occ}} (\vect{C}_{0})_{\mu}^{m} (\vect{C}_{0})_{\nu}^{m} \\
+  \label{eq:7}
+  E_{\textrm{elec}}^{0} &= \sum_{\mu\nu}^{\textrm{AO}} D_{\mu\nu}^{0} (H_{\mu\nu}^{\textrm{core}} + F_{\mu\nu}) = \mathrm{tr}(\vect{D}^{0}(\vect{H}^{\textrm{core}} + \vect{F}^{0})) \\
+  \label{eq:8}
+  \vect{F}^{'} &\equiv \vect{\tilde{S}}^{-1/2} \vect{F} \vect{S}^{-1/2}
+\end{align}
+Rinse and repeat from steps \ref{eq:4}-\ref{eq:8} until your chosen error
+metric is acceptable.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Techniques for SCF Convergence}
+  \begin{itemize}
+    \item Damping
+    \item Level Shifting
+    \item \textbf{Extrapolation}
+    \item Direct Minimzation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some Working Equations}
+  \begin{equation}
+    \vect{F}' = \sum_{i} c_{i} \vect{F}_{i}
+  \end{equation}
+  \begin{align}
+    \vect{e}' &= \sum_{i} c_{i} \vect{e}_{i} \\
+    &\approx \vect{0} \nonumber
+  \end{align}
+  where
+  \begin{align}
+    \vect{e}_{i} &\equiv \vect{F}_{i} \vect{P}_{i} \vect{S} - \vect{S} \vect{P}_{i} \vect{F}_{i} \\
+    &= [\vect{F}_{i}, \vect{P}_{i}]
+  \end{align}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivation Part 1} Suppose we have a vector from
+  the \textit{i}th step of an iterative procedure that can be formed
+  as the sum of the final quantity plus some error
+  \begin{equation}
+    \vect{p}_{i} = \vect{p}_{f} + \vect{e}_{i}
+  \end{equation}
+  and that a good approximation to the final vector is a linear
+  combination of the previous guesses
+  \begin{equation}
+    \vect{p} = \sum_{i}^{m} c_{i} \vect{p}_{i}
+  \end{equation}
+  where \textit{m} is a fixed integer (defaults: ORCA 5, GAMESS 10,
+  Q-Chem 15). Every time there isn't a limit on the sum, assume it's
+  \textit{m}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivation Part 2}
+  Make a substitution for \(\vect{p}_{i}\)
+  \begin{align}
+    \vect{p} &= \sum_{i} c_{i} (\vect{p}_{f} + \vect{e}_{i}) \\
+    &= \vect{p}_{f} \sum_{i} c_{i} + \sum_{i} c_{i} \vect{e}_{i}.
+  \end{align}
+  At convergence, the error must drop to zero, leaving us with
+  \begin{align}
+    \vect{p} &= \vect{p}_{f} \sum_{i} c_{i} \\
+    &= \vect{p}_{f}.
+  \end{align}
+  So, we must minimize \(\vect{e}^{\prime}\) under the constraint
+  \(\sum_{i} c_{i} = 1\).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivation Part 3} Constrained minimization? Lagrange
+  multipliers! To minimize the norm of the error
+  \begin{equation}
+    \Braket{\vect{e}|\vect{e}} = \sum_{ij}^{m} c_{i}^{*} c_{j} \Braket{\vect{e}_{i}|\vect{e}_{j}},
+  \end{equation}
+  define the Lagrangian
+  \begin{equation}
+    \mathscr{L} = \vect{c}^{\dagger}\vect{B}\vect{c} - \lambda \left( 1 - \sum_{i}^{m} c_{i} \right)
+  \end{equation}
+  where
+  \begin{equation}
+    B_{ij} = \Braket{\vect{e}_{i}|\vect{e}_{j}}.
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivation Part 4}
+  The messy part is minimizing the Lagrangian
+  \begin{align}
+    \frac{\partial\mathscr{L}}{\partial c_{k}} = 0 &= \sum_{j} c_{j}B_{kj} + \sum_{i} c_{i}B_{ik} - \lambda \\
+&= 2 \sum_{i} c_{i} B_{ki} - \lambda,
+  \end{align}
+  where the 2 can be absorbed into \(\lambda\) and the coefficients
+  are assumed to be real. We now need to solve \(m+1\) linear
+  equations
+  \begin{equation}
+    \begin{pmatrix}
+      B_{11} & B_{12} & \cdots & B_{1m} & -1 \\
+      B_{21} & B_{22} & \cdots & B_{2m} & -1 \\
+      \vdots & \vdots & \ddots & \vdots & -1 \\
+      B_{m1} & B_{m2} & \cdots & B_{mm} & -1 \\
+      -1 & -1 & \cdots & -1 & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      c_{1} \\ c_{2} \\ \vdots \\ c_{m} \\ \lambda
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      0 \\ 0 \\ \vdots \\ 0 \\ -1
+    \end{pmatrix}
+  \end{equation}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some More Working Equations}
+  All of this results in solving the linear system
+  \begin{equation}
+    \vect{B} \vect{c} = \vect{z},
+  \end{equation}
+  where \vect{z} is the ``zero vector''. Finding the \(\{c_{m}\}\) as
+  \begin{equation}
+    \vect{c} = \vect{B}^{-1} \vect{z}
+  \end{equation}
+  is done with a math library, typically involving a call to the
+  LAPACK routine \texttt{DGESV}.
+\end{frame}
+
+\section{Some Examples}
+
+\begin{frame}
+  \frametitle{A 1-by-1 Example}
+
+  \begin{equation}
+    \begin{pmatrix}
+      B_{11} & -1 \\
+      -1 & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      c_{1} \\ \lambda
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      0 \\ -1
+    \end{pmatrix}
+  \end{equation}
+
+  \begin{equation}
+    \begin{pmatrix}
+      c_{1} \\ \lambda
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      0 & -1 \\
+      -1 & -B_{11}
+    \end{pmatrix}
+    \begin{pmatrix}
+      0 \\ -1
+    \end{pmatrix}
+  \end{equation}
+  Surprise, \(c_{1}\) is 1!
+\end{frame}
+
+\begin{frame}
+  \frametitle{A 2-by-2 Example}
+
+  \begin{equation}
+    \begin{pmatrix}
+      B_{11} & B_{12} & -1 \\
+      B_{21} & B_{22} & -1 \\
+      -1 & -1 & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      c_{1} \\ c_{2} \\ \lambda
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      0 \\ 0 \\ -1
+    \end{pmatrix}
+  \end{equation}
+
+  Results in the following set of equations:
+
+  \begin{align}
+    c_{1} B_{11} + c_{2} B_{12} - \lambda &= 0 \\
+    c_{1} B_{21} + c_{2} B_{22} - \lambda &= 0 \\
+    - c_{1} - c_{2} &= -1
+  \end{align}
+
+\end{frame}
+
+\section{Some Code}
+
+\begin{frame}
+  \frametitle{Outline of the algorithm}
+  \begin{itemize}
+    \item Compute the Error Matrix in Each Iteration
+    \item Build the B Matrix and Solve the Linear Equations
+    \item Compute the New Fock Matrix
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Computing the Error Matrix}
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS error matrix.
+ *
+ * The formula for the error matrix at the ith iteration is:
+ *  $e_{i}=F_{i}D_{i}S-SD_{i}F_{i}$
+ */
+arma::mat build_error_matrix(const arma::mat &F,
+                             const arma::mat &D,
+                             const arma::mat &S) {
+  return (F*D*S) - (S*D*F);
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Building the B Matrix}
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS B matrix, or ``$A$'' in $Ax=b$.
+ */
+arma::mat build_B_matrix(const deque< arma::mat > &e) {
+  int NErr = e.size();
+  arma::mat B(NErr + 1, NErr + 1);
+  B(NErr, NErr) = 0.0;
+  for (int a = 0; a < NErr; a++) {
+    B(a, NErr) = B(NErr, a) = -1.0;
+    for (int b = 0; b < a + 1; b++)
+      B(a, b) = B(b, a) = arma::dot(e[a].t(),  e[b]);
+  }
+  return B;
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Computing the New Fock Matrix}
+\begin{minted}[linenos,gobble=0,mathescape,fontsize=\small]{c++}
+/*!
+ * @brief Build the extrapolated Fock matrix from the Fock vector.
+ *
+ * The formula for the extrapolated Fock matrix is:
+ *  $F^{\prime}=\sum_{k}^{m}c_{k}F_{k}$
+ * where there are $m$ elements in the Fock and error vectors.
+ */
+void build_extrap_fock(arma::mat &F_extrap,
+                       const arma::vec &diis_coeffs,
+                       const deque< arma::mat > &diis_fock_vec) {
+  const int len = diis_coeffs.n_elem - 1;
+  F_extrap.zeros();
+  for (int i = 0; i < len; i++)
+    F_extrap += (diis_coeffs(i) * diis_fock_vec[i]);
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Algorithm: Form RHS}
+\begin{minted}[linenos,gobble=0,mathescape]{c++}
+/*!
+ * @brief Build the DIIS "zero" vector, or "$b$" in $Ax=b$.
+ */
+arma::vec build_diis_zero_vec(const int len) {
+  arma::vec diis_zero_vec(len, arma::fill::zeros);
+  diis_zero_vec(len - 1) = -1.0;
+  return diis_zero_vec;
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Algorithm: Data Structures}
+\begin{minted}[linenos,gobble=2]{c++}
+  /*!
+   * Prepare structures necessary for DIIS extrapolation.
+   */
+  int NErr;
+  deque< arma::mat > diis_error_vec;
+  deque< arma::mat > diis_fock_vec;
+  int max_diis_length = 6;
+  arma::mat diis_error_mat;
+  arma::vec diis_zero_vec;
+  arma::mat B;
+  arma::vec diis_coeff_vec;
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Algorithm: Main Loop}
+\begin{minted}[linenos,gobble=4,fontsize=\footnotesize]{c++}
+    // Start collecting elements for DIIS once we're past the first iteration.
+    if (iter > 0) {
+      diis_error_mat = build_error_matrix(F, D, S);
+      NErr = diis_error_vec.size();
+      if (NErr >= max_diis_length) {
+        diis_error_vec.pop_back();
+        diis_fock_vec.pop_back();
+      }
+      diis_error_vec.push_front(diis_error_mat);
+      diis_fock_vec.push_front(F);
+      NErr = diis_error_vec.size();
+      // Perform DIIS extrapolation only if we have 2 or more points.
+      if (NErr >= 2) {
+        diis_zero_vec = build_diis_zero_vec(NErr + 1);
+        B = build_B_matrix(diis_error_vec);
+        diis_coeff_vec = arma::solve(B, diis_zero_vec);
+        build_extrap_fock(F, diis_coeff_vec, diis_fock_vec);
+      }
+    }
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Results: DIIS Off}
+  Water, RHF/STO-3G (7 basis functions)
+\begin{Verbatim}[fontsize=\tiny]
+   0    -117.839710375889    -117.839710375889
+   1     -70.284216222929    -117.839710375889
+   2     -76.045949191625      47.555494152959       1.826673084479
+   3     -74.714598899044      -5.761732968696       0.479570364860
+   4     -74.984773695191       1.331350292581       0.086831688906
+   5     -74.935766125703      -0.270174796147       0.031026136359
+   6     -74.943904016889       0.049007569488       0.010799283179
+   7     -74.942119723104      -0.008137891186       0.005254826831
+   8     -74.942250190433       0.001784293785       0.002438579642
+   9     -74.942136438892      -0.000130467329       0.001177279531
+  10     -74.942111868815       0.000113751541       0.000564543180
+...
+  23     -74.942079930560       0.000000005264       0.000000043256
+  24     -74.942079929335       0.000000002540       0.000000020871
+  25     -74.942079928743       0.000000001226       0.000000010070
+  26     -74.942079928458       0.000000000591       0.000000004859
+  27     -74.942079928320       0.000000000285       0.000000002345
+  28     -74.942079928254       0.000000000138       0.000000001131
+  29     -74.942079928222       0.000000000066       0.000000000546
+  30     -74.942079928206       0.000000000032       0.000000000263
+  31     -74.942079928199       0.000000000016       0.000000000127
+  32     -74.942079928195       0.000000000007       0.000000000061
+  33     -74.942079928193       0.000000000004       0.000000000030
+  34     -74.942079928193       0.000000000002       0.000000000014
+  35     -74.942079928192       0.000000000001       0.000000000007
+  36     -74.942079928192       0.000000000000       0.000000000003
+  37     -74.942079928192       0.000000000000       0.000000000002
+  38     -74.942079928192       0.000000000000       0.000000000001
+  39     -74.942079928192       0.000000000000       0.000000000000
+  40     -74.942079928192       0.000000000000       0.000000000000
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Results: DIIS On}
+  Water, RHF/STO-3G (7 basis functions), 6 error vectors
+\begin{Verbatim}[fontsize=\tiny]
+   0    -117.839710375889    -117.839710375889
+   1     -70.284216222929    -117.839710375889
+   2     -74.576672718926      47.555494152959       1.826673084479
+   3     -75.105709804074      -4.292456495997       0.403889812696
+   4     -74.954655933663      -0.529037085148       0.088003715430
+   5     -74.938944396782       0.151053870411       0.020519848928
+   6     -74.942105934721       0.015711536881       0.012108640030
+   7     -74.942079965219      -0.003161537938       0.000460862177
+   8     -74.942079928865       0.000025969502       0.000001081074
+   9     -74.942079928192       0.000000036354       0.000000052668
+  10     -74.942079928192       0.000000000673       0.000000000336
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{DIIS Error Matrix}
+After iteration 0:
+\begin{Verbatim}[fontsize=\tiny]
+                1           2           3           4           5           6           7
+    1  -0.0000000  -0.0135594  -0.0000000  -0.0102014   0.0000000  -0.0646745  -0.0646745
+    2   0.0135594   0.0000000  -0.0000000  -0.0072338   0.0000000   0.1917308   0.1917308
+    3   0.0000000   0.0000000   0.0000000   0.0000000  -0.0000000   0.2279110  -0.2279110
+    4   0.0102014   0.0072338  -0.0000000   0.0000000   0.0000000   0.1787515   0.1787515
+    5  -0.0000000  -0.0000000   0.0000000  -0.0000000   0.0000000   0.0000000  -0.0000000
+    6   0.0646745  -0.1917308  -0.2279110  -0.1787515  -0.0000000   0.0000000   0.0000000
+    7   0.0646745  -0.1917308   0.2279110  -0.1787515   0.0000000  -0.0000000   0.0000000
+\end{Verbatim}
+After iteration 2:
+\begin{Verbatim}[fontsize=\tiny]
+                1           2           3           4           5           6           7
+    1   0.0000000  -0.0001491  -0.0000000   0.0005689  -0.0000000  -0.0004437  -0.0004437
+    2   0.0001491   0.0000000  -0.0000000  -0.0156002  -0.0000000   0.0133253   0.0133253
+    3   0.0000000   0.0000000   0.0000000   0.0000000  -0.0000000   0.0010536  -0.0010536
+    4  -0.0005689   0.0156002  -0.0000000  -0.0000000  -0.0000000  -0.0044211  -0.0044211
+    5   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000   0.0000000
+    6   0.0004437  -0.0133253  -0.0010536   0.0044211  -0.0000000   0.0000000   0.0000000
+    7   0.0004437  -0.0133253   0.0010536   0.0044211  -0.0000000   0.0000000   0.0000000
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{DIIS B matrix and coefficients}
+After two iterations:
+\begin{Verbatim}[fontsize=\tiny]
+                1           2           3
+    1  -0.0850416   0.1611509  -1.0000000  0.7287
+    2   0.1611509  -0.5000366  -1.0000000  0.2713
+    3  -1.0000000  -1.0000000   0.0000000 -0.0182
+\end{Verbatim}
+Just before convergence:
+\begin{Verbatim}[fontsize=\tiny]
+                1           2           3           4           5           6           7
+    1  -0.0000000   0.0000000   0.0000000   0.0000000  -0.0000000   0.0000000  -1.0000000    1.9028e+00
+    2   0.0000000  -0.0000000  -0.0000000  -0.0000000   0.0000000  -0.0000000  -1.0000000   -9.0514e-01
+    3   0.0000000  -0.0000000  -0.0000000  -0.0000000   0.0000000   0.0000000  -1.0000000    2.0913e-03
+    4   0.0000000  -0.0000000  -0.0000000  -0.0000000   0.0000000  -0.0000000  -1.0000000    2.2118e-04
+    5  -0.0000000   0.0000000   0.0000000   0.0000000  -0.0000001  -0.0000005  -1.0000000    3.1371e-07
+    6   0.0000000  -0.0000000   0.0000000  -0.0000000  -0.0000005  -0.0000142  -1.0000000    8.1938e-09
+    7  -1.0000000  -1.0000000  -1.0000000  -1.0000000  -1.0000000  -1.0000000   0.0000000   -1.2659e-27
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GDIIS}
+  In the case of a nearly quadratic energy function,
+  \begin{align}
+    \vect{e}_{i} &= -\vect{H}^{-1} \vect{g}_{i} \\
+    \vect{x}_{m+1}^{\prime} &= \sum_{i} c_{i} \vect{x}_{i} \\
+    \vect{g}_{m+1}^{\prime} &= \sum_{i} c_{i} \vect{g}_{i} \\
+    \vect{x}_{m+1} &= \vect{x}_{m+1}^{\prime} - \vect{H}^{-1} \vect{g}_{m+1}^{\prime}
+  \end{align}
+\end{frame}
+
+\begin{frame}
+  \frametitle{References}
+  \begin{itemize}
+  \item
+    \url{http://sirius.chem.vt.edu/wiki/doku.php?id=crawdad:programming:project8}
+    (T. Daniel Crawford)
+  \item Pulay, J Comp Chem, 3 (1982) 556.
+  \item \url{http://vergil.chemistry.gatech.edu/notes/diis/diis.html}
+    (C. David Sherrill)
+  \item Introduction to Computational Chemistry (2nd Ed.), Frank Jensen
+  \item \url{http://en.cppreference.com/w/cpp/container/deque}
+  \item Q-Chem 4.2 manual
+  \end{itemize}
+\end{frame}
+
+\end{document}

@@ -47,10 +47,10 @@ add_custom_target(inp_p3_h2o_sto3g
 
 if (ARMADILLO_FOUND)
   add_executable(project3 project3/project3.cpp)
+  add_executable(project8 project8/project8.cpp)
   add_dependencies(project3 inp_p3_h2o_sto3g)
-  target_link_libraries(project3
-    molecule
-    "${ARMADILLO_LIBRARIES}"
-    )
+  add_dependencies(project8 inp_p3_h2o_sto3g)
+  target_link_libraries(project3 molecule "${ARMADILLO_LIBRARIES}")
+  target_link_libraries(project8 molecule "${ARMADILLO_LIBRARIES}")
 endif (ARMADILLO_FOUND)
 
