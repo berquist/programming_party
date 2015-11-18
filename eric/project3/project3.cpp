@@ -35,7 +35,7 @@ int main()
 
   size_t NElec = 10;
   size_t NOcc = NElec / 2;
-  size_t NBasis = 7;
+  size_t NBasis = 26;
   size_t M = idx4(NBasis, NBasis, NBasis, NBasis);
 
   size_t i, j, k, l;
@@ -43,7 +43,7 @@ int main()
   size_t mu, nu, lam, sig;
 
   FILE *enuc_file;
-  enuc_file = fopen("h2o_sto3g_enuc.dat", "r");
+  enuc_file = fopen("h2o_dzp_enuc.dat", "r");
   double Vnn;
   fscanf(enuc_file, "%lf", &Vnn);
   fclose(enuc_file);
@@ -68,9 +68,9 @@ int main()
   arma::mat L_S(NBasis, NBasis);
 
   FILE *S_file, *T_file, *V_file;
-  S_file = fopen("h2o_sto3g_s.dat", "r");
-  T_file = fopen("h2o_sto3g_t.dat", "r");
-  V_file = fopen("h2o_sto3g_v.dat", "r");
+  S_file = fopen("h2o_dzp_s.dat", "r");
+  T_file = fopen("h2o_dzp_t.dat", "r");
+  V_file = fopen("h2o_dzp_v.dat", "r");
 
   while (fscanf(S_file, "%d %d %lf", &i, &j, &val) != EOF)
     S(i-1, j-1) = S(j-1, i-1) = val;
@@ -86,7 +86,7 @@ int main()
   arma::vec ERI = arma::vec(M, arma::fill::zeros);
 
   FILE *ERI_file;
-  ERI_file = fopen("h2o_sto3g_eri.dat", "r");
+  ERI_file = fopen("h2o_dzp_eri.dat", "r");
 
   while (fscanf(ERI_file, "%d %d %d %d %lf", &i, &j, &k, &l, &val) != EOF) {
     mu = i-1; nu = j-1; lam = k-1; sig = l-1;
@@ -96,7 +96,7 @@ int main()
   fclose(ERI_file);
 
   double thresh_E = 1.0e-15;
-  double thresh_D = 1.0e-7;
+  double thresh_D = 1.0e-10;
   size_t iteration = 0;
   size_t max_iterations = 1024;
   double E_total, E_elec_old, E_elec_new, delta_E, rmsd_D;
