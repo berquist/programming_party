@@ -19,8 +19,10 @@ def getargs():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--stub', default="h2o_sto3g")
+    parser.add_argument('--nbasis', type=int, default=7)
     parser.add_argument('--nelec', type=int, default=10)
-
+    parser.add_argument('--thresh-e', type=int, default=15)
+    parser.add_argument('--thresh-d', type=int, default=10)
     parser.add_argument('--guess',
                         choices=('hcore', 'gwh'),
                         default='hcore',
@@ -170,8 +172,7 @@ if __name__ == "__main__":
 
     nelec = args.nelec
     nocc = nelec // 2
-    dim = 7
-    nbasis = dim
+    dim = nbasis = args.nbasis
 
     stub = args.stub + "_"
 
@@ -234,8 +235,8 @@ if __name__ == "__main__":
 
     f = np.empty(shape=(nbasis, nbasis))
 
-    thresh_e = 1.0e-15
-    thresh_d = 1.0e-7
+    thresh_e = 10**(-args.thresh_e)
+    thresh_d = 10**(-args.thresh_d)
     iteration = 1
     max_iterations = 1024
     rmsd_d = 99999.9
