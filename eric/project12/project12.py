@@ -262,11 +262,19 @@ if __name__ == "__main__":
     # Form the RPA supermatrix.
     H_RPA = np.bmat([[ A,  B],
                      [-B, -A]])
-    print(H_RPA[:5, :5])
     eigvals_RPA, eigvecs_RPA = np.linalg.eig(H_RPA)
     idx_RPA = eigvals_RPA.argsort()
     eigvals_RPA = eigvals_RPA[idx_RPA].real
     eigvecs_RPA = eigvecs_RPA[idx_RPA].real
-    print('RPA excitation energies (SO basis)')
+    print('RPA excitation energies (SO basis), method 1')
     for i, e in enumerate(eigvals_RPA, start=1):
+        print(i, e, e * hartree_to_ev)
+
+    H_RPA_reduced = np.dot(A + B, A - B)
+    eigvals_RPA_reduced, eigvecs_RPA_reduced = np.linalg.eig(H_RPA_reduced)
+    idx_RPA_reduced = eigvals_RPA_reduced.argsort()
+    eigvals_RPA_reduced = np.sqrt(eigvals_RPA_reduced[idx_RPA_reduced].real)
+    eigvecs_RPA_reduced = eigvecs_RPA_reduced[idx_RPA_reduced].real
+    print('RPA excitation energies (SO basis), method 2')
+    for i, e in enumerate(eigvals_RPA_reduced, start=1):
         print(i, e, e * hartree_to_ev)
