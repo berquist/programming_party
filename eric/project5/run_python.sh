@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-python -O -m programming_party.eric.project5.project5
-# python ./project5.py
+python3 -O -m programming_party.eric.project5.project5
