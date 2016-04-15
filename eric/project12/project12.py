@@ -236,7 +236,10 @@ if __name__ == "__main__":
     H_CIS = np.zeros(shape=(nsov, nsov))
     # Form the CIS Hamiltonian.
     form_hamiltonian_cis(H_CIS, E_SO, TEI_SO, nsocc)
-    energies_CIS, eigvals_CIS = np.linalg.eigh(H_CIS)
+    energies_CIS, eigvecs_CIS = np.linalg.eigh(H_CIS)
+    idx_CIS = energies_CIS.argsort()
+    energies_CIS = energies_CIS[idx_CIS]
+    eigvecs_CIS = eigvecs_CIS[idx_CIS]
     print('CIS excitation energies (SO basis)')
     hartree_to_ev = 27.211385
     for i, e in enumerate(energies_CIS, start=1):
