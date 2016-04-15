@@ -65,7 +65,7 @@ def make_spin_orbital_energies(E_MO):
 
 
 def form_hamiltonian_cis(H_CIS, E_SO, TEI_SO, nsocc):
-    """Form the CIS Hamiltonian."""
+    """Form the CIS Hamiltonian in the spin orbital basis."""
 
     # nsov = H_CIS.shape[0]
     nsorb = E_SO.shape[0]
@@ -83,6 +83,124 @@ def form_hamiltonian_cis(H_CIS, E_SO, TEI_SO, nsocc):
     return
 
 
+def form_hamiltonian_cis_singlet(H_CIS_singlet, E_MO, TEI_MO, nocc):
+    """Form the singlet CIS Hamiltonian in the molecular orbital basis."""
+
+    norb = E_MO.shape[0]
+    nvirt = norb - nocc
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    # 2<aj|ib> - <aj|bi> = 2(ai|jb) - (ab|ji)
+                    H_CIS_singlet[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) + (2 * TEI_MO[a + nocc, i, j, b + nocc]) - TEI_MO[a + nocc, b + nocc, j, i]
+
+    return
+
+
+def form_hamiltonian_cis_triplet(H_CIS_triplet, E_MO, TEI_MO, nocc):
+    """Form the triplet CIS Hamiltonian in the molecular orbital basis."""
+
+    norb = E_MO.shape[0]
+    nvirt = norb - nocc
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    # <aj|bi> = (ab|ji)
+                    H_CIS_triplet[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) - TEI_MO[a + nocc, b + nocc, j, i]
+
+    return
+
+
+# def form_rpa_a_matrix(E_MO, TEI_MO):
+#     """Form the A (CIS) matrix for RPA."""
+
+#     norb = TEI_MO.shape[0]
+#     nvirt = norb - nocc
+#     nov = nocc * nvirt
+
+#     A = np.empty(shape=(nov, nov))
+
+#     for i in range(nocc):
+#         for a in range(nvirt):
+#             ia = i*nvirt + a
+#             for j in range(nocc):
+#                 for b in range(nvirt):
+#                     jb = j*nvirt + b
+#                     # <aj||ib> = <aj|ib> - <aj|bi> = (ai|jb) - (ab|ji)
+#                     A[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) + TEI_MO[a + nocc, i, j, b + nocc] - TEI_MO[a + nocc, b + nocc, j, i]
+
+#     return A
+
+
+# def form_rpa_b_matrix(TEI_MO):
+#     """Form the B matrix for RPA."""
+
+#     norb = TEI_MO.shape[0]
+#     nvirt = norb - nocc
+#     nov = nocc * nvirt
+
+#     B = np.empty(shape=(nov, nov))
+
+#     for i in range(nocc):
+#         for a in range(nvirt):
+#             ia = i*nvirt + a
+#             for j in range(nocc):
+#                 for b in range(nvirt):
+#                     jb = j*nvirt + b
+#                     # <ab||ij> = <ab|ij> - <ab|ji> = (ai|bj) - (aj|bi)
+#                     B[ia, jb] = TEI_MO[a + nocc, i, b + nocc, j] - TEI_MO[a + nocc, j, b + nocc, i]
+
+#     return B
+
+
+def form_rpa_a_matrix_so(E_SO, TEI_SO, nocc):
+    """Form the A (CIS) matrix for RPA in the spin orbital basis."""
+
+    norb = TEI_SO.shape[0]
+    nvirt = norb - nocc
+    nov = nocc * nvirt
+
+    A = np.empty(shape=(nov, nov))
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    A[ia, jb] = ((i == j) * E_SO[a + nocc, b + nocc]) - ((a == b) * E_SO[i, j]) + TEI_SO[a + nocc, j, i, b + nocc]
+
+    return A
+
+
+def form_rpa_b_matrix_so(TEI_SO, nocc):
+    """Form the B matrix for RPA in the spin orbital basis."""
+
+    norb = TEI_SO.shape[0]
+    nvirt = norb - nocc
+    nov = nocc * nvirt
+
+    B = np.empty(shape=(nov, nov))
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    B[ia, jb] = TEI_SO[a + nocc, b + nocc, i, j]
+
+    return B
+
+
 if __name__ == "__main__":
 
     args = getargs()
@@ -93,21 +211,17 @@ if __name__ == "__main__":
     nvirt = norb - nocc
     nov = nocc * nvirt
 
-    E = np_load('F_MO.npz')
+    E_MO = np_load('F_MO.npz')
     H = np_load('H.npz')
     TEI_MO = np_load('TEI_MO.npz')
     print('MO energies')
-    print(np.diag(E))
-    print('E.shape: {}'.format(E.shape))
-    print('H.shape: {}'.format(H.shape))
-    print('TEI_MO.shape: {}'.format(TEI_MO.shape))
-    # sum_all = np.sum(E)
-    # sum_diag = np.sum(np.diag(E))
+    print(np.diag(E_MO))
+    # sum_all = np.sum(E_MO)
+    # sum_diag = np.sum(np.diag(E_MO))
     # diff = sum_all - sum_diag
     # print(sum_all, sum_diag, diff)
     TEI_SO = np.zeros(shape=np.array(TEI_MO.shape) * 2)
-    print('TEI_SO.shape: {}'.format(TEI_SO.shape))
-    E_SO = make_spin_orbital_energies(E)
+    E_SO = make_spin_orbital_energies(E_MO)
     nsorb = TEI_SO.shape[0]
     nsocc = nocc * 2
     nsvir = nsorb - nsocc
@@ -122,5 +236,37 @@ if __name__ == "__main__":
     H_CIS = np.zeros(shape=(nsov, nsov))
     # Form the CIS Hamiltonian.
     form_hamiltonian_cis(H_CIS, E_SO, TEI_SO, nsocc)
-    # print_mat(H_CIS)
-    # print_mat(H_CIS[-7:, -7:])
+    energies_CIS, eigvals_CIS = np.linalg.eigh(H_CIS)
+    print('CIS excitation energies (SO basis)')
+    hartree_to_ev = 27.211385
+    for i, e in enumerate(energies_CIS, start=1):
+        print(i, e, e * hartree_to_ev)
+
+    ## Spin-adapted CIS
+    H_CIS_singlet = np.zeros(shape=(nov, nov))
+    H_CIS_triplet = np.zeros(shape=(nov, nov))
+    form_hamiltonian_cis_singlet(H_CIS_singlet, E_MO, TEI_MO, nocc)
+    form_hamiltonian_cis_triplet(H_CIS_triplet, E_MO, TEI_MO, nocc)
+    energies_CIS_singlet, eigvecs_CIS_singlet = np.linalg.eigh(H_CIS_singlet)
+    energies_CIS_triplet, eigvecs_CIS_triplet = np.linalg.eigh(H_CIS_triplet)
+    _energies_CIS_singlet = sorted(((e, 'singlet') for e in energies_CIS_singlet))
+    _energies_CIS_triplet = sorted(((e, 'triplet') for e in energies_CIS_triplet))
+    energies_CIS = sorted(_energies_CIS_singlet + _energies_CIS_triplet)
+    print('CIS excitation energies (MO basis)')
+    for i, (e, t) in enumerate(energies_CIS, start=1):
+        print(i, e, e * hartree_to_ev, t)
+
+    ## Time-Dependent Hartree-Fock (TDHF) / Random Phase Approximation (RPA)
+    A = form_rpa_a_matrix_so(E_SO, TEI_SO, nsocc)
+    B = form_rpa_b_matrix_so(TEI_SO, nsocc)
+    # Form the RPA supermatrix.
+    H_RPA = np.bmat([[ A,  B],
+                     [-B, -A]])
+    print(H_RPA[:5, :5])
+    eigvals_RPA, eigvecs_RPA = np.linalg.eig(H_RPA)
+    idx_RPA = eigvals_RPA.argsort()
+    eigvals_RPA = eigvals_RPA[idx_RPA].real
+    eigvecs_RPA = eigvecs_RPA[idx_RPA].real
+    print('RPA excitation energies (SO basis)')
+    for i, e in enumerate(eigvals_RPA, start=1):
+        print(i, e, e * hartree_to_ev)
