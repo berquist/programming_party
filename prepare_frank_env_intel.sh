@@ -6,8 +6,8 @@
 # This will load the proper environment modules for using the
 # Intel compilers on Frank.
 
-module use /home/dlambrecht/erb74/modules/frank
-module use /home/dlambrecht/software/modules
+module use /ihome/dlambrecht/erb74/modules/frank
+module use /ihome/dlambrecht/software/modules
 
 module purge
 
