@@ -17,4 +17,4 @@ module load git
 module load cmake
 module load intel/2015.1.133
 module load mkl/2015.1.133/icc-st
-module load armadillo/5.600.2-i2015.1.133-wrapper
+module load armadillo/6.700.4-i2015.1.133-wrapper

@@ -17,4 +17,4 @@ module load git
 module load cmake
 module load gcc/5.2.0-rhel
 module load mkl/2015.1.133/icc-st
-module load armadillo/5.600.2-g5.2.0-mkl2015-wrapper
+module load armadillo/6.700.4-g5.2.0-mkl2015-wrapper
