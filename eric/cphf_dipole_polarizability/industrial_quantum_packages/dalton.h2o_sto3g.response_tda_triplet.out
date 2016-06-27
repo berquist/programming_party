@@ -136,7 +136,7 @@
   Hans Agren,               KTH Stockholm,                Sweden      (SIRIUS module, RESPONS, MC-SCRF solvation model)
  --------------------------------------------------------------------------------
 
-     Date and time (Linux)  : Tue Apr 19 18:34:17 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
  * Work memory size             :    64000000 =  488.28 megabytes.
@@ -189,8 +189,10 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 **WAVE FUNCTIONS                                  
 .HF                                               
 **RESPONSE                                        
+.TDA                                              
 *LINEAR                                           
 .DIPLEN                                           
+.TRIPLET                                          
 **END OF DALTON INPUT                             
 
 
@@ -376,8 +378,8 @@ H  -1.638036840407   1.136548822547  -0.0000000000
  HERMIT - Number of two-electron integrals written:         228 ( 56.2% )
  HERMIT - Megabytes written:                              0.007
 
- >>>> Total CPU  time used in HERMIT:   0.02 seconds
- >>>> Total wall time used in HERMIT:   0.02 seconds
+ >>>> Total CPU  time used in HERMIT:   0.01 seconds
+ >>>> Total wall time used in HERMIT:   0.00 seconds
 
 
                         .----------------------------------.
@@ -410,7 +412,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
  **********************************************************************
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
  Title lines from ".mol" input file:
@@ -519,7 +521,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 
  >>> Writing SIRIFC interface file
 
- >>>> CPU and wall time for SCF :       0.127       0.018
+ >>>> CPU and wall time for SCF :       0.463       0.073
 
 
                        .-----------------------------------.
@@ -538,10 +540,10 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 @    Final gradient norm:           0.000000302314
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
-File label for MO orbitals:  19Apr16   FOCKDIIS
+File label for MO orbitals:  27Jun16   FOCKDIIS
 
  (Only coefficients >0.0100 are printed.)
 
@@ -559,11 +561,11 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
 
- >>>> Total CPU  time used in SIRIUS :      0.46 seconds
- >>>> Total wall time used in SIRIUS :      0.09 seconds
+ >>>> Total CPU  time used in SIRIUS :      0.62 seconds
+ >>>> Total wall time used in SIRIUS :      0.10 seconds
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
 
@@ -585,6 +587,17 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
  <<<<<<<<<< OUTPUT FROM RESPONSE INPUT PROCESSING >>>>>>>>>>
 
+
+
+
+ CHANGES OF DEFAULTS FOR RSPINP:
+ -------------------------------
+
+
+ TAMM-DANCOFF APPROXIMATION (B = 0). TDA=T
+
+ Default : Using Fock type decoupling of the two-electron density matrix :
+    Add DV*(FC+FV) instead of DV*FC to E[2] approximate orbital diagonal
 
 
 
@@ -627,7 +640,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
  Perturbation symmetry.     KSYMOP:       1
- Perturbation spin symmetry.TRPLET:       F
+ Perturbation spin symmetry.TRPLET:       T
  Orbital variables.         KZWOPT:      10
  Configuration variables.   KZCONF:       0
  Total number of variables. KZVAR :      10
@@ -643,7 +656,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
  <<<  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES >>>
 
- Operator symmetry = 1  ( A  ); triplet =   F
+ Operator symmetry = 1  ( A  ); triplet =   T
 
 
  *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
@@ -651,7 +664,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
  Convergence of RSP solution vectors, threshold = 1.00D-03
  ---------------------------------------------------------------
  (dimension of paired reduced space:    8)
- RSP solution vector no.    1; norm of residual   4.99D-16
+ RSP solution vector no.    1; norm of residual   2.73D-16
 
  *** RSPCTL MICROITERATIONS CONVERGED
 
@@ -666,15 +679,15 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
  <<<  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES >>>
 
- Operator symmetry = 1  ( A  ); triplet =   F
+ Operator symmetry = 1  ( A  ); triplet =   T
 
 
  *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
 
  Convergence of RSP solution vectors, threshold = 1.00D-03
  ---------------------------------------------------------------
- (dimension of paired reduced space:    6)
- RSP solution vector no.    1; norm of residual   5.35D-04
+ (dimension of paired reduced space:    8)
+ RSP solution vector no.    1; norm of residual   1.93D-16
 
  *** RSPCTL MICROITERATIONS CONVERGED
 
@@ -689,7 +702,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
  <<<  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES >>>
 
- Operator symmetry = 1  ( A  ); triplet =   F
+ Operator symmetry = 1  ( A  ); triplet =   T
 
 
  *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
@@ -697,7 +710,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
  Convergence of RSP solution vectors, threshold = 1.00D-03
  ---------------------------------------------------------------
  (dimension of paired reduced space:    2)
- RSP solution vector no.    1; norm of residual   1.55D-15
+ RSP solution vector no.    1; norm of residual   1.13D-15
 
  *** RSPCTL MICROITERATIONS CONVERGED
 
@@ -706,25 +719,22 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
            ------------------------------------------------------------
 
 
-@ Spin symmetry of operators: singlet
+@ Spin symmetry of operators: triplet
 
  Note that minus the linear response function: - << A; B >>(omega) is printed.
  The results are of quadratic accuracy using Sellers formula.
 
 @ FREQUENCY INDEPENDENT SECOND ORDER PROPERTIES
 
-@ -<< XDIPLEN  ; XDIPLEN  >> =  7.935562430547D+00
-@ -<< XDIPLEN  ; YDIPLEN  >> =  6.277640690270D-16
-@ -<< XDIPLEN  ; ZDIPLEN  >> =  3.040734634278D-16
-@ -<< YDIPLEN  ; YDIPLEN  >> =  3.068210825176D+00
-@ -<< YDIPLEN  ; ZDIPLEN  >> =  1.450292544766D-16
-@ -<< ZDIPLEN  ; ZDIPLEN  >> =  5.038621186431D-02
+@ -<< XDIPLEN  ; XDIPLEN  >> =  1.464430750320D+01
+@ -<< YDIPLEN  ; YDIPLEN  >> =  8.809214564810D+00
+@ -<< ZDIPLEN  ; ZDIPLEN  >> =  6.859495634243D-02
 
 
- Time used in linear response calculation is      0.17 CPU seconds for symmetry 1
+ Time used in linear response calculation is      0.02 CPU seconds for symmetry 1
 
- >>>> Total CPU  time used in RESPONSE:   0.18 seconds
- >>>> Total wall time used in RESPONSE:   0.02 seconds
+ >>>> Total CPU  time used in RESPONSE:   0.03 seconds
+ >>>> Total wall time used in RESPONSE:   0.00 seconds
 
 
                    .-------------------------------------------.
@@ -743,7 +753,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
 
@@ -753,7 +763,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
 
 
@@ -861,17 +871,17 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
 
- >>>> Total CPU  time used in ABACUS:   0.09 seconds
- >>>> Total wall time used in ABACUS:   0.01 seconds
+ >>>> Total CPU  time used in ABACUS:   0.01 seconds
+ >>>> Total wall time used in ABACUS:   0.00 seconds
 
 
                    .-------------------------------------------.
                    | End of Static Property Section (ABACUS) - |
                    `-------------------------------------------'
 
- >>>> Total CPU  time used in DALTON:   0.89 seconds
- >>>> Total wall time used in DALTON:   0.22 seconds
+ >>>> Total CPU  time used in DALTON:   0.68 seconds
+ >>>> Total wall time used in DALTON:   0.12 seconds
 
  
-     Date and time (Linux)  : Tue Apr 19 18:34:18 2016
+     Date and time (Linux)  : Mon Jun 27 01:39:07 2016
      Host name              : copper                                  
