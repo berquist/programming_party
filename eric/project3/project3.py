@@ -46,7 +46,8 @@ def parse_int_file_2(filename, dim):
         contents = fh.readlines()
     for line in contents:
         mu, nu, intval = map(float, line.split())
-        mat[mu-1, nu-1] = mat[nu-1, mu-1] = intval
+        mu, nu = int(mu - 1), int(nu - 1)
+        mat[mu, nu] = mat[nu, mu] = intval
     return mat
 
 
@@ -58,7 +59,7 @@ def parse_int_file_4(filename, dim):
         contents = fh.readlines()
     for line in contents:
         mu, nu, lm, sg, intval = map(float, line.split())
-        mu, nu, lm, sg = mu - 1, nu - 1, lm - 1, sg - 1
+        mu, nu, lm, sg = int(mu - 1), int(nu - 1), int(lm - 1), int(sg - 1)
         mat[mu, nu, lm, sg] = \
             mat[mu, nu, sg, lm] = \
             mat[nu, mu, lm, sg] = \

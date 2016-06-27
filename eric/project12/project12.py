@@ -4,9 +4,15 @@ from __future__ import print_function
 from __future__ import division
 
 import numpy as np
+np_formatter = {
+    'float_kind': lambda x: '{:14.8f}'.format(x)
+}
+np.set_printoptions(linewidth=160, formatter=np_formatter, threshold=np.inf)
 
-from ..utils import print_mat
+from ..utils import matsym
 from ..utils import np_load
+from ..utils import print_mat
+from ..utils import read_arma_mat_ascii
 
 from ..project3.project3 import parse_int_file_2
 
@@ -73,7 +79,12 @@ def make_spin_orbital_energies(E_MO):
 
 
 def form_hamiltonian_cis_so(H_CIS, E_SO, TEI_SO, nsocc):
-    """Form the CIS Hamiltonian in the spin orbital (SO) basis."""
+    """Form the CIS Hamiltonian in the spin orbital (SO) basis.
+
+    The equation for element {ia,jb} is <aj||ib> = <aj|ib> - <aj|bi> =
+    [ai|jb] - [ab|ji]. It also includes the virt-occ energy difference
+    on the diagonal.
+    """
 
     nsorb = E_SO.shape[0]
     nsvir = nsorb - nsocc
@@ -90,7 +101,12 @@ def form_hamiltonian_cis_so(H_CIS, E_SO, TEI_SO, nsocc):
 
 
 def form_hamiltonian_cis_mo_singlet(H_CIS_singlet, E_MO, TEI_MO, nocc):
-    """Form the singlet CIS Hamiltonian in the molecular orbital (MO) basis."""
+    """Form the singlet CIS Hamiltonian in the molecular orbital (MO) basis.
+
+    The equation for element {ia,jb} is <aj||ib> = <aj|ib> - <aj|bi> =
+    [ai|jb] - [ab|ji] = 2(ai|jb) - (ab|ji). It also includes the
+    virt-occ energy difference on the diagonal.
+    """
 
     norb = E_MO.shape[0]
     nvirt = norb - nocc
@@ -101,14 +117,17 @@ def form_hamiltonian_cis_mo_singlet(H_CIS_singlet, E_MO, TEI_MO, nocc):
             for j in range(nocc):
                 for b in range(nvirt):
                     jb = j*nvirt + b
-                    # 2<aj|ib> - <aj|bi> = 2(ai|jb) - (ab|ji)
                     H_CIS_singlet[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) + (2 * TEI_MO[a + nocc, i, j, b + nocc]) - TEI_MO[a + nocc, b + nocc, j, i]
 
     return
 
 
 def form_hamiltonian_cis_mo_triplet(H_CIS_triplet, E_MO, TEI_MO, nocc):
-    """Form the triplet CIS Hamiltonian in the molecular orbital (MO) basis."""
+    """Form the triplet CIS Hamiltonian in the molecular orbital (MO) basis.
+
+    The equation for element {ia,jb} is -<aj|bi> = -(ab|ji). It also
+    includes the virt-occ energy difference on the diagonal.
+    """
 
     norb = E_MO.shape[0]
     nvirt = norb - nocc
@@ -119,35 +138,44 @@ def form_hamiltonian_cis_mo_triplet(H_CIS_triplet, E_MO, TEI_MO, nocc):
             for j in range(nocc):
                 for b in range(nvirt):
                     jb = j*nvirt + b
-                    # <aj|bi> = (ab|ji)
                     H_CIS_triplet[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) - TEI_MO[a + nocc, b + nocc, j, i]
 
     return
 
 
-def form_rpa_a_matrix_so(E_SO, TEI_SO, nocc):
-    """Form the A (CIS) matrix for RPA in the spin orbital (SO) basis."""
+def form_rpa_a_matrix_so(E_SO, TEI_SO, nsocc):
+    """Form the A (CIS) matrix for RPA in the spin orbital (SO) basis.
 
-    norb = TEI_SO.shape[0]
-    nvirt = norb - nocc
-    nov = nocc * nvirt
+    The equation for element {ia,jb} is <aj||ib> = <aj|ib> - <aj|bi> =
+    [ai|jb] - [ab|ji]. It also includes the virt-occ energy difference
+    on the diagonal.
+    """
+
+    nsorb = TEI_SO.shape[0]
+    nsvir = nsorb - nsocc
+    nov = nsocc * nsvir
 
     A = np.empty(shape=(nov, nov))
 
-    for i in range(nocc):
-        for a in range(nvirt):
-            ia = i*nvirt + a
-            for j in range(nocc):
-                for b in range(nvirt):
-                    jb = j*nvirt + b
-                    # <aj||ib>
-                    A[ia, jb] = ((i == j) * E_SO[a + nocc, b + nocc]) - ((a == b) * E_SO[i, j]) + TEI_SO[a + nocc, j, i, b + nocc]
+    for i in range(nsocc):
+        for a in range(nsvir):
+            ia = i*nsvir + a
+            for j in range(nsocc):
+                for b in range(nsvir):
+                    jb = j*nsvir + b
+                    A[ia, jb] = ((i == j) * E_SO[a + nsocc, b + nsocc]) - ((a == b) * E_SO[i, j]) + TEI_SO[a + nsocc, j, i, b + nsocc]
 
     return A
 
 
-def form_rpa_a_matrix_mo(E_MO, TEI_MO, nocc):
-    """Form the A (CIS) matrix for RPA in the molecular orbital (MO) basis."""
+def form_rpa_a_matrix_mo_singlet(E_MO, TEI_MO, nocc):
+    """Form the A (CIS) matrix for RPA in the molecular orbital (MO)
+    basis. [singlet]
+
+    The equation for element {ia,jb} is <aj||ib> = <aj|ib> - <aj|bi> =
+    [ai|jb] - [ab|ji] = 2(ai|jb) - (ab|ji). It also includes the
+    virt-occ energy difference on the diagonal.
+    """
 
     norb = E_MO.shape[0]
     nvirt = norb - nocc
@@ -161,14 +189,45 @@ def form_rpa_a_matrix_mo(E_MO, TEI_MO, nocc):
             for j in range(nocc):
                 for b in range(nvirt):
                     jb = j*nvirt + b
-                    # <aj||ib> = (ai||jb) = (ai|jb) - (ab|ji)
-                    # A[ia, jb] = ((i == j) * E_SO[a + nocc, b + nocc]) - ((a == b) * E_SO[i, j]) + TEI_SO[a + nocc, j, i, b + nocc]
-                    A[ia, jb] = ((i == j) * E_MO[a + nocc, b + nocc]) - ((a == b) * E_MO[i, j]) + TEI_MO[a + nocc, i, j, b + nocc] - TEI_MO[a + nocc, b + nocc, j, i]
+                    A[ia, jb] = 2*TEI_MO[a + nocc, i, j, b + nocc] - TEI_MO[a + nocc, b + nocc, j, i]
+                    if (ia == jb):
+                        A[ia, jb] += (E_MO[a + nocc, b + nocc] - E_MO[i, j])
+
+    return A
+
+def form_rpa_a_matrix_mo_triplet(E_MO, TEI_MO, nocc):
+    """Form the A (CIS) matrix for RPA in the molecular orbital (MO)
+    basis. [triplet]
+
+    The equation for element {ia,jb} is - <aj|bi> = - [ab|ji] = -
+    (ab|ji). It also includes the virt-occ energy difference on the
+    diagonal.
+    """
+
+    norb = E_MO.shape[0]
+    nvirt = norb - nocc
+    nov = nocc * nvirt
+
+    A = np.empty(shape=(nov, nov))
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    A[ia, jb] = - TEI_MO[a + nocc, b + nocc, j, i]
+                    if (ia == jb):
+                        A[ia, jb] += (E_MO[a + nocc, b + nocc] - E_MO[i, j])
 
     return A
 
 def form_rpa_b_matrix_so(TEI_SO, nocc):
-    """Form the B matrix for RPA in the spin orbital (SO) basis."""
+    """Form the B matrix for RPA in the spin orbital (SO) basis.
+
+    The equation for element {ia,jb} is <ab||ij> = <ab|ij> - <ab|ji> =
+    [ai|bj] - [aj|bi].
+    """
 
     norb = TEI_SO.shape[0]
     nvirt = norb - nocc
@@ -187,8 +246,13 @@ def form_rpa_b_matrix_so(TEI_SO, nocc):
     return B
 
 
-def form_rpa_b_matrix_mo(TEI_MO, nocc):
-    """Form the B matrix for RPA in the molecular orbital (MO) basis."""
+def form_rpa_b_matrix_mo_singlet(TEI_MO, nocc):
+    """Form the B matrix for RPA in the molecular orbital (MO)
+    basis. [singlet]
+
+    The equation for element {ia,jb} is <ab||ij> = <ab|ij> - <ab|ji> =
+    [ai|bj] - [aj|bi] = 2*(ai|bj) - (aj|bi).
+    """
 
     norb = TEI_MO.shape[0]
     nvirt = norb - nocc
@@ -202,9 +266,32 @@ def form_rpa_b_matrix_mo(TEI_MO, nocc):
             for j in range(nocc):
                 for b in range(nvirt):
                     jb = j*nvirt + b
-                    # <ab||ij> = <ab|ij> - <ab|ji>
-                    # <ab||ij> = (ai||bj) = (ai|bj) - (aj|bi)
-                    B[ia, jb] = TEI_MO[a + nocc, i, b + nocc, j] - TEI_MO[a + nocc, j, b + nocc, i]
+                    B[ia, jb] = 2*TEI_MO[a + nocc, i, b + nocc, j] - TEI_MO[a + nocc, j, b + nocc, i]
+
+    return B
+
+
+def form_rpa_b_matrix_mo_triplet(TEI_MO, nocc):
+    """Form the B matrix for RPA in the molecular orbital (MO)
+    basis. [triplet]
+
+    The equation for element {ia,jb} is <ab||ij> = <ab|ij> - <ab|ji> =
+    [ai|bj] - [aj|bi] = 2(ai|bj) - (aj|bi).
+    """
+
+    norb = TEI_MO.shape[0]
+    nvirt = norb - nocc
+    nov = nocc * nvirt
+
+    B = np.empty(shape=(nov, nov))
+
+    for i in range(nocc):
+        for a in range(nvirt):
+            ia = i*nvirt + a
+            for j in range(nocc):
+                for b in range(nvirt):
+                    jb = j*nvirt + b
+                    B[ia, jb] = 2*TEI_MO[a + nocc, i, b + nocc, j] - TEI_MO[a + nocc, j, b + nocc, i]
 
     return B
 
@@ -372,37 +459,52 @@ if __name__ == "__main__":
     # Build the Fock matrix in the SO basis.
     F_SO = build_fock_spin_orbital(TEI_SO, H, nsocc)
 
-    H_CIS = np.zeros(shape=(nsov, nsov))
-    # Form the CIS Hamiltonian.
-    form_hamiltonian_cis_so(H_CIS, E_SO, TEI_SO, nsocc)
-    energies_CIS, eigvecs_CIS = np.linalg.eigh(H_CIS)
-    idx_CIS = energies_CIS.argsort()
-    energies_CIS = energies_CIS[idx_CIS]
-    eigvecs_CIS = eigvecs_CIS[:, idx_CIS]
-    print('CIS excitation energies (SO basis)')
     hartree_to_ev = 27.211385
-    for i, e in enumerate(energies_CIS, start=1):
+
+    H_CIS_SO = np.zeros(shape=(nsov, nsov))
+    form_hamiltonian_cis_so(H_CIS_SO, E_SO, TEI_SO, nsocc)
+    assert matsym(H_CIS_SO) == 1
+    energies_CIS_SO, eigvecs_CIS_SO = np.linalg.eigh(H_CIS_SO)
+    idx_CIS_SO = energies_CIS_SO.argsort()
+    energies_CIS_SO = energies_CIS_SO[idx_CIS_SO]
+    eigvecs_CIS_SO = eigvecs_CIS_SO[:, idx_CIS_SO]
+    print('CIS excitation energies (SO basis)')
+    for i, e in enumerate(energies_CIS_SO, start=1):
         print(i, e, e * hartree_to_ev)
 
     ## Spin-adapted CIS
-    H_CIS_singlet = np.zeros(shape=(nov, nov))
-    H_CIS_triplet = np.zeros(shape=(nov, nov))
-    form_hamiltonian_cis_mo_singlet(H_CIS_singlet, E_MO, TEI_MO, nocc)
-    form_hamiltonian_cis_mo_triplet(H_CIS_triplet, E_MO, TEI_MO, nocc)
-    energies_CIS_singlet, eigvecs_CIS_singlet = np.linalg.eigh(H_CIS_singlet)
-    energies_CIS_triplet, eigvecs_CIS_triplet = np.linalg.eigh(H_CIS_triplet)
-    idx_CIS_singlet = energies_CIS_singlet.argsort()
-    idx_CIS_triplet = energies_CIS_triplet.argsort()
-    energies_CIS_singlet = energies_CIS_singlet[idx_CIS_singlet]
-    energies_CIS_triplet = energies_CIS_triplet[idx_CIS_triplet]
-    eigvecs_CIS_singlet = eigvecs_CIS_singlet[:, idx_CIS_singlet]
-    eigvecs_CIS_triplet = eigvecs_CIS_triplet[:, idx_CIS_triplet]
-    _energies_CIS_singlet = sorted(((e, 'singlet') for e in energies_CIS_singlet))
-    _energies_CIS_triplet = sorted(((e, 'triplet') for e in energies_CIS_triplet))
-    energies_CIS = sorted(_energies_CIS_singlet + _energies_CIS_triplet)
+    H_CIS_MO_singlet = np.zeros(shape=(nov, nov))
+    H_CIS_MO_triplet = np.zeros(shape=(nov, nov))
+    form_hamiltonian_cis_mo_singlet(H_CIS_MO_singlet, E_MO, TEI_MO, nocc)
+    form_hamiltonian_cis_mo_triplet(H_CIS_MO_triplet, E_MO, TEI_MO, nocc)
+    assert matsym(H_CIS_MO_singlet) == 1
+    assert matsym(H_CIS_MO_triplet) == 1
+    energies_CIS_MO_singlet, eigvecs_CIS_MO_singlet = np.linalg.eigh(H_CIS_MO_singlet)
+    energies_CIS_MO_triplet, eigvecs_CIS_MO_triplet = np.linalg.eigh(H_CIS_MO_triplet)
+    idx_CIS_MO_singlet = energies_CIS_MO_singlet.argsort()
+    idx_CIS_MO_triplet = energies_CIS_MO_triplet.argsort()
+    energies_CIS_MO_singlet = energies_CIS_MO_singlet[idx_CIS_MO_singlet]
+    energies_CIS_MO_triplet = energies_CIS_MO_triplet[idx_CIS_MO_triplet]
+    eigvecs_CIS_MO_singlet = eigvecs_CIS_MO_singlet[:, idx_CIS_MO_singlet]
+    eigvecs_CIS_MO_triplet = eigvecs_CIS_MO_triplet[:, idx_CIS_MO_triplet]
+    energies_CIS_MO_singlet_labeled = sorted(((e, 'singlet') for e in energies_CIS_MO_singlet))
+    energies_CIS_MO_triplet_labeled = sorted(((e, 'triplet') for e in energies_CIS_MO_triplet))
+    energies_CIS_MO_labeled = sorted(energies_CIS_MO_singlet_labeled + energies_CIS_MO_triplet_labeled)
     print('CIS excitation energies (MO basis)')
-    for i, (e, t) in enumerate(energies_CIS, start=1):
+    for i, (e, t) in enumerate(energies_CIS_MO_labeled, start=1):
         print(i, e, e * hartree_to_ev, t)
+
+    # duplicate the triplet MO energies to match the SO results
+    energies_CIS_MO_triplet_dup = []
+    for e in energies_CIS_MO_triplet:
+        for _ in range(3):
+            energies_CIS_MO_triplet_dup.append(e)
+    energies_CIS_MO = np.concatenate((energies_CIS_MO_singlet, energies_CIS_MO_triplet_dup), axis=0)
+    idx_CIS_MO = energies_CIS_MO.argsort()
+    energies_CIS_MO = energies_CIS_MO[idx_CIS_MO]
+
+    assert energies_CIS_SO.shape == energies_CIS_MO.shape
+    assert (energies_CIS_SO - energies_CIS_MO).all() == 0.0
 
     # print('HF (GS) electronic dipole')
     # M100_AO = parse_int_file_2(args.stub + '_mux.dat', dim)
@@ -439,42 +541,84 @@ if __name__ == "__main__":
 
     ## Time-Dependent Hartree-Fock (TDHF) / Random Phase Approximation (RPA)
     ## method 1
-    A = form_rpa_a_matrix_so(E_SO, TEI_SO, nsocc)
-    B = form_rpa_b_matrix_so(TEI_SO, nsocc)
-    # Form the RPA supermatrix.
-    H_RPA = np.bmat([[ A,  B],
-                     [-B, -A]])
-    eigvals_RPA, eigvecs_RPA = np.linalg.eig(H_RPA)
-    idx_RPA = eigvals_RPA.argsort()
-    eigvals_RPA = eigvals_RPA[idx_RPA].real
-    eigvecs_RPA = eigvecs_RPA[idx_RPA].real
+    A_SO = form_rpa_a_matrix_so(E_SO, TEI_SO, nsocc)
+    B_SO = form_rpa_b_matrix_so(TEI_SO, nsocc)
+    H_RPA_SO = np.bmat([[ A_SO,  B_SO],
+                        [-B_SO, -A_SO]])
+    assert matsym(A_SO) == 1
+    assert matsym(B_SO) == 1
+    assert matsym(H_RPA_SO) == 2
+    energies_RPA_SO, eigvecs_RPA_SO = np.linalg.eig(H_RPA_SO)
+    idx_RPA_SO = energies_RPA_SO.argsort()
+    energies_RPA_SO = energies_RPA_SO[idx_RPA_SO].real
+    eigvecs_RPA_SO = eigvecs_RPA_SO[idx_RPA_SO].real
     print('RPA excitation energies (SO basis), method 1')
-    for i, e in enumerate(eigvals_RPA, start=1):
+    for i, e in enumerate(energies_RPA_SO, start=1):
         print(i, e, e * hartree_to_ev)
 
     ## method 2
-    H_RPA_reduced = np.dot(A + B, A - B)
-    eigvals_RPA_reduced, eigvecs_RPA_reduced = np.linalg.eig(H_RPA_reduced)
-    idx_RPA_reduced = eigvals_RPA_reduced.argsort()
-    eigvals_RPA_reduced = np.sqrt(eigvals_RPA_reduced[idx_RPA_reduced].real)
-    eigvecs_RPA_reduced = eigvecs_RPA_reduced[idx_RPA_reduced].real
+    H_RPA_SO_reduced = np.dot(A_SO + B_SO, A_SO - B_SO)
+    energies_RPA_SO_reduced, eigvecs_RPA_SO_reduced = np.linalg.eig(H_RPA_SO_reduced)
+    idx_RPA_SO_reduced = energies_RPA_SO_reduced.argsort()
+    energies_RPA_SO_reduced = np.sqrt(energies_RPA_SO_reduced[idx_RPA_SO_reduced].real)
+    eigvecs_RPA_SO_reduced = eigvecs_RPA_SO_reduced[idx_RPA_SO_reduced].real
     print('RPA excitation energies (SO basis), method 2')
-    for i, e in enumerate(eigvals_RPA_reduced, start=1):
+    for i, e in enumerate(energies_RPA_SO_reduced, start=1):
         print(i, e, e * hartree_to_ev)
 
     ## method 1, MO basis
-    A = form_rpa_a_matrix_mo(E_MO, TEI_MO, nocc)
-    B = form_rpa_b_matrix_mo(TEI_MO, nocc)
-    # Form the RPA supermatrix.
-    H_RPA_MO = np.bmat([[ A,  B],
-                        [-B, -A]])
-    eigvals_RPA_MO, eigvecs_RPA_MO = np.linalg.eig(H_RPA_MO)
-    idx_RPA_MO = eigvals_RPA_MO.argsort()
-    eigvals_RPA_MO = eigvals_RPA_MO[idx_RPA_MO].real
-    eigvecs_RPA_MO = eigvecs_RPA_MO[idx_RPA_MO].real
+    A_MO_singlet = form_rpa_a_matrix_mo_singlet(E_MO, TEI_MO, nocc)
+    A_MO_triplet = form_rpa_a_matrix_mo_triplet(E_MO, TEI_MO, nocc)
+    B_MO_singlet = form_rpa_b_matrix_mo_singlet(TEI_MO, nocc)
+    B_MO_triplet = form_rpa_b_matrix_mo_triplet(TEI_MO, nocc)
+    H_RPA_MO_singlet = np.bmat([[ A_MO_singlet,  B_MO_singlet],
+                                [-B_MO_singlet, -A_MO_singlet]])
+    H_RPA_MO_triplet = np.bmat([[ A_MO_triplet,  B_MO_triplet],
+                                [-B_MO_triplet, -A_MO_triplet]])
+    assert matsym(A_MO_singlet) == 1
+    assert matsym(B_MO_singlet) == 1
+    assert matsym(H_RPA_MO_singlet) == 2
+    assert matsym(A_MO_triplet) == 1
+    assert matsym(B_MO_triplet) == 1
+    assert matsym(H_RPA_MO_triplet) == 2
+    energies_RPA_MO_singlet, eigvecs_RPA_MO_singlet = np.linalg.eig(H_RPA_MO_singlet)
+    energies_RPA_MO_triplet, eigvecs_RPA_MO_triplet = np.linalg.eig(H_RPA_MO_triplet)
+    idx_RPA_MO_singlet = energies_RPA_MO_singlet.argsort()
+    idx_RPA_MO_triplet = energies_RPA_MO_triplet.argsort()
+    energies_RPA_MO_singlet = energies_RPA_MO_singlet[idx_RPA_MO_singlet].real
+    energies_RPA_MO_triplet = energies_RPA_MO_triplet[idx_RPA_MO_triplet].real
+    eigvecs_RPA_MO_singlet = eigvecs_RPA_MO_singlet[idx_RPA_MO_singlet].real
+    eigvecs_RPA_MO_triplet = eigvecs_RPA_MO_triplet[idx_RPA_MO_triplet].real
+    energies_RPA_MO_singlet_labeled = sorted(((e, 'singlet') for e in energies_RPA_MO_singlet))
+    energies_RPA_MO_triplet_labeled = sorted(((e, 'triplet') for e in energies_RPA_MO_triplet))
+    energies_RPA_MO_labeled = sorted(energies_RPA_MO_singlet_labeled + energies_RPA_MO_triplet_labeled)
     print('RPA excitation energies (MO basis), method 1')
-    for i, e in enumerate(eigvals_RPA_MO, start=1):
-        print(i, e, e * hartree_to_ev)
+    for i, (e, t) in enumerate(energies_RPA_MO_labeled, start=1):
+        print(i, e, e * hartree_to_ev, t)
+
+    # duplicate the triplet MO energies to match the SO results
+    energies_RPA_MO_triplet_dup = []
+    for e in energies_RPA_MO_triplet:
+        for _ in range(3):
+            energies_RPA_MO_triplet_dup.append(e)
+    energies_RPA_MO = np.concatenate((energies_RPA_MO_singlet, energies_RPA_MO_triplet_dup), axis=0)
+    idx_RPA_MO = energies_RPA_MO.argsort()
+    energies_RPA_MO = energies_RPA_MO[idx_RPA_MO]
+
+    assert energies_RPA_SO.shape == energies_RPA_MO.shape
+    assert (energies_RPA_SO - energies_RPA_MO).all() == 0.0
+
+    # cpp_A = read_arma_mat_ascii('A_singlet.armamat')
+    # cpp_B = read_arma_mat_ascii('B_singlet.armamat')
+    # cpp_H = read_arma_mat_ascii('H_singlet.armamat')
+    # assert A.shape == cpp_A.shape
+    # assert B.shape == cpp_B.shape
+    # assert H_RPA_MO.shape == cpp_H.shape
+    # diff_A = A - cpp_A
+    # diff_B = B - cpp_B
+    # diff_H = H_RPA_MO - cpp_H
+    # print(diff_A)
+    # print(diff_B)
 
     # davidson_jjgoings()
 

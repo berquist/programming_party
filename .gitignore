@@ -33,3 +33,12 @@ dist/
 *.exe
 *.app
 *.x
+
+# DALTON
+DALTON_scratch_eric/
+
+# Q-Chem
+pathtable
+
+# other
+python_log
