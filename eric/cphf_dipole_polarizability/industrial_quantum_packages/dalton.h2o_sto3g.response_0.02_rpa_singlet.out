@@ -4,8 +4,11 @@
      *************** Dalton - An Electronic Structure Program ***************
      ************************************************************************
 
-    This is output from DALTON 2015.0
+    This is output from DALTON release Dalton2016.2 (2016)
+         ( Web site: http://daltonprogram.org )
+
    ----------------------------------------------------------------------------
+
     NOTE:
      
     Dalton is an experimental code for the evaluation of molecular
@@ -24,13 +27,13 @@
      
        K. Aidas, C. Angeli, K. L. Bak, V. Bakken, R. Bast,
        L. Boman, O. Christiansen, R. Cimiraglia, S. Coriani,
-       J. Cukras, P. Dahle, E. K. Dalskov, U. Ekstroem,
+       P. Dahle, E. K. Dalskov, U. Ekstroem,
        T. Enevoldsen, J. J. Eriksen, P. Ettenhuber, B. Fernandez,
        L. Ferrighi, H. Fliegl, L. Frediani, K. Hald, A. Halkier,
        C. Haettig, H. Heiberg, T. Helgaker, A. C. Hennum,
        H. Hettema, E. Hjertenaes, S. Hoest, I.-M. Hoeyvik,
        M. F. Iozzi, B. Jansik, H. J. Aa. Jensen, D. Jonsson,
-       P. Joergensen, M. Kaminski, J. Kauczor, S. Kirpekar,
+       P. Joergensen, J. Kauczor, S. Kirpekar,
        T. Kjaergaard, W. Klopper, S. Knecht, R. Kobayashi, H. Koch,
        J. Kongsted, A. Krapp, K. Kristensen, A. Ligabue,
        O. B. Lutnaes, J. I. Melo, K. V. Mikkelsen, R. H. Myhre,
@@ -45,12 +48,12 @@
        O. Vahtras, M. A. Watson, D. J. D. Wilson, M. Ziolkowski
        and H. Agren,
        "The Dalton quantum chemistry program system",
-       WIREs Comput. Mol. Sci. 2013. (doi: 10.1002/wcms.1172)
-    
+       WIREs Comput. Mol. Sci. 2014, 4:269–284 (doi: 10.1002/wcms.1172)
+     
     and
-    
+     
        Dalton, a Molecular Electronic Structure Program,
-       Release DALTON2014.0 (2015), see http://daltonprogram.org
+       Release Dalton2016.2 (2016), see http://daltonprogram.org
    ----------------------------------------------------------------------------
 
     Authors in alphabetical order (major contribution(s) in parenthesis):
@@ -59,7 +62,7 @@
   Celestino Angeli,         University of Ferrara,        Italy       (NEVPT2)
   Keld L. Bak,              UNI-C,                        Denmark     (AOSOPPA, non-adiabatic coupling, magnetic properties)
   Vebjoern Bakken,          University of Oslo,           Norway      (DALTON; geometry optimizer, symmetry detection)
-  Radovan Bast,             KTH Stockholm,                Sweden      (DALTON installation and execution frameworks)
+  Radovan Bast,             UiT The Arctic U. of Norway,  Norway      (DALTON installation and execution frameworks)
   Pablo Baudin,             University of Valencia,       Spain       (Cholesky excitation energies)
   Linus Boman,              NTNU,                         Norway      (Cholesky decomposition and subsystems)
   Ove Christiansen,         Aarhus University,            Denmark     (CC module)
@@ -70,6 +73,7 @@
   Erik K. Dalskov,          UNI-C,                        Denmark     (SOPPA)
   Thomas Enevoldsen,        Univ. of Southern Denmark,    Denmark     (SOPPA)
   Janus J. Eriksen,         Aarhus University,            Denmark     (Polarizable embedding model, TDA)
+  Rasmus Faber,             University of Copenhagen,     Denmark     (Vib.avg. NMR with SOPPA, parallel AO-SOPPA)
   Berta Fernandez,          U. of Santiago de Compostela, Spain       (doublet spin, ESR in RESPONS)
   Lara Ferrighi,            Aarhus University,            Denmark     (PCM Cubic response)
   Heike Fliegl,             University of Oslo,           Norway      (CCSD(R12))
@@ -78,6 +82,7 @@
   Christof Haettig,         Ruhr-University Bochum,       Germany     (CC module)
   Kasper Hald,              Aarhus University,            Denmark     (CC module)
   Asger Halkier,            Aarhus University,            Denmark     (CC module)
+  Frederik Beyer Hansen,    University of Copenhagen,     Denmark     (Parallel AO-SOPPA)
   Erik D. Hedegaard,        Univ. of Southern Denmark,    Denmark     (Polarizable embedding model, QM/MM)
   Hanne Heiberg,            University of Oslo,           Norway      (geometry analysis, selected one-electron integrals)
   Trygve Helgaker,          University of Oslo,           Norway      (DALTON; ABACUS, ERI, DFT modules, London, and much more)
@@ -105,7 +110,7 @@
   Rolf H. Myhre,            NTNU,                         Norway      (Cholesky, subsystems and ECC2)
   Christian Neiss,          Univ. Erlangen-Nuernberg,     Germany     (CCSD(R12))
   Christian B. Nielsen,     University of Copenhagen,     Denmark     (QM/MM)
-  Patrick Norman,           Linkoeping University,        Sweden      (Cubic response and complex response in RESPONS)
+  Patrick Norman,           Linkoeping University,        Sweden      (Cubic response and complex frequency response in RESPONS)
   Jeppe Olsen,              Aarhus University,            Denmark     (SIRIUS CI/density modules)
   Jogvan Magnus H. Olsen,   Univ. of Southern Denmark,    Denmark     (Polarizable embedding model, QM/MM)
   Anders Osted,             Copenhagen University,        Denmark     (QM/MM)
@@ -136,14 +141,14 @@
   Hans Agren,               KTH Stockholm,                Sweden      (SIRIUS module, RESPONS, MC-SCRF solvation model)
  --------------------------------------------------------------------------------
 
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
  * Work memory size             :    64000000 =  488.28 megabytes.
 
  * Directories for basis set searches:
    1) /home/eric/development/programming_party/eric/cphf_dipole_polarizability/industrial_quantum_packages
-   2) /home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis
+   2) /home/eric/opt/apps/dalton/2016.2-g6.3.1-openblas-omp/dalton/basis
 
 
 Compilation information
@@ -151,46 +156,49 @@ Compilation information
 
  Who compiled             | eric
  Host                     | copper
- System                   | Linux-3.13.0-46-generic
+ System                   | Linux-4.9.6-1-ARCH
  CMake generator          | Unix Makefiles
  Processor                | x86_64
  64-bit integers          | OFF
  MPI                      | OFF
- Fortran compiler         | /home/eric/opt/apps/intel/2013_sp1_update1/compose
-                          | r_xe_2013_sp1.1.106/bin/intel64/ifort
- Fortran compiler version | ifort (IFORT) 14.0.1 20131008
- C compiler               | /home/eric/opt/apps/intel/2013_sp1_update1/compose
-                          | r_xe_2013_sp1.1.106/bin/intel64/icc
- C compiler version       | icc (ICC) 14.0.1 20131008
- C++ compiler             | /home/eric/opt/apps/intel/2013_sp1_update1/compose
-                          | r_xe_2013_sp1.1.106/bin/intel64/icpc
- C++ compiler version     | icpc (ICC) 14.0.1 20131008
+ Fortran compiler         | /usr/bin/gfortran
+ Fortran compiler version | GNU Fortran (GCC) 6.3.1 20170109
+ C compiler               | /usr/bin/gcc
+ C compiler version       | gcc (GCC) 6.3.1 20170109
+ C++ compiler             | /usr/bin/g++
+ C++ compiler version     | g++ (GCC) 6.3.1 20170109
+ BLAS                     | /lib64/libopenblas.so
+ LAPACK                   | /lib64/liblapack.so
  Static linking           | OFF
- Last Git revision        | d34efb170c481236ad60c789dea90a4c857c6bab
- Configuration time       | 2015-03-16 13:50:41.378554
+ Last Git revision        | 7db4647eac203e51aae7da3cbc289f55146b30e9
+ Configuration time       | 2017-02-06 10:48:14.292909
 
 
    Content of the .dal input file
  ----------------------------------
 
-BASIS                                             
-STO-3G                                            
----                                               
----                                               
-Atomtypes=2 Charge=0 Nosymmetry                   
-Charge=8.0 Atoms=1                                
-O   0.000000000000  -0.143225816552   0.0000000000
-Charge=1.0 Atoms=2                                
-H   1.638036840407   1.136548822547  -0.0000000000
-H  -1.638036840407   1.136548822547  -0.0000000000
-                                                  
-**DALTON INPUT                                    
-.RUN ALL                                          
-**WAVE FUNCTIONS                                  
-.HF                                               
-**PROPERTIES                                      
-.POLARI                                           
-**END OF DALTON INPUT                             
+BASIS
+STO-3G
+---
+---
+Atomtypes=2 Charge=0 Nosymmetry
+Charge=8.0 Atoms=1
+O   0.000000000000  -0.143225816552   0.000000000000
+Charge=1.0 Atoms=2
+H   1.638036840407   1.136548822547  -0.000000000000
+H  -1.638036840407   1.136548822547  -0.000000000000
+
+**DALTON INPUT
+.RUN ALL
+**WAVE FUNCTIONS
+.HF
+**RESPONSE
+*LINEAR
+.DIPLEN
+.FREQUE
+1
+0.02
+**END OF DALTON INPUT
 
 
        *******************************************************************
@@ -226,7 +234,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
   Number of symmetry independent centers:    1
   Number of basis sets to read;    2
   Basis set file used for this atomic type with Z =   8 :
-     "/home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis/STO-3G"
+     "/home/eric/opt/apps/dalton/2016.2-g6.3.1-openblas-omp/dalton/basis/STO-3G"
 
   Atomic type no.    2
   --------------------
@@ -234,7 +242,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
   Number of symmetry independent centers:    2
   Number of basis sets to read;    2
   Basis set file used for this atomic type with Z =   1 :
-     "/home/eric/opt/apps/dalton/2015-i2013.sp1.1-mkl-omp/dalton/basis/STO-3G"
+     "/home/eric/opt/apps/dalton/2016.2-g6.3.1-openblas-omp/dalton/basis/STO-3G"
 
 
                          SYMGRP: Point group information
@@ -280,8 +288,8 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 
   Total number of coordinates:    9
   O       :     1  x   0.0000000000    2  y  -0.1432258166    3  z   0.0000000000
-  H       :     4  x   1.6380368404    5  y   1.1365488225    6  z   0.0000000000
-  H       :     7  x  -1.6380368404    8  y   1.1365488225    9  z   0.0000000000
+  H       :     4  x   1.6380368404    5  y   1.1365488225    6  z  -0.0000000000
+  H       :     7  x  -1.6380368404    8  y   1.1365488225    9  z  -0.0000000000
 
 
    Interatomic separations (in Angstrom):
@@ -375,8 +383,8 @@ H  -1.638036840407   1.136548822547  -0.0000000000
  HERMIT - Number of two-electron integrals written:         228 ( 56.2% )
  HERMIT - Megabytes written:                              0.007
 
- >>>> Total CPU  time used in HERMIT:   0.01 seconds
- >>>> Total wall time used in HERMIT:   0.01 seconds
+  Total CPU  time used in HERMIT:   0.00 seconds
+  Total wall time used in HERMIT:   0.00 seconds
 
 
                         .----------------------------------.
@@ -409,7 +417,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
  **********************************************************************
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
  Title lines from ".mol" input file:
@@ -428,7 +436,7 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 
      Wave function specification
      ============================
-@    Wave function type        >>> HF <<<
+@    Wave function type        --- HF ---
 @    Number of closed shell electrons          10
 @    Number of electrons in active shells       0
 @    Total charge of the molecule               0
@@ -473,31 +481,30 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 @  1    -74.8838784167        7.27281D-01   -7.49D+01    1
       Virial theorem: -V/T =      2.004387
 @      MULPOP O      -0.47; H       0.24; H       0.24; 
+   1  Level shift: doubly occupied orbital energies shifted by -2.00D-01
  -----------------------------------------------------------------------------
-@  2    -74.9390985821        1.79877D-01   -5.52D-02    2
-      Virial theorem: -V/T =      2.010065
-@      MULPOP O      -0.21; H       0.11; H       0.11; 
- -----------------------------------------------------------------------------
-@  3    -74.9419417201        3.45651D-02   -2.84D-03    3
-      Virial theorem: -V/T =      2.008195
+@  2    -74.9368353068        2.18328D-01   -5.30D-02    2
+      Virial theorem: -V/T =      2.009259
 @      MULPOP O      -0.26; H       0.13; H       0.13; 
+   2  Level shift: doubly occupied orbital energies shifted by -1.00D-01
  -----------------------------------------------------------------------------
-@  4    -74.9420796210        1.94968D-03   -1.38D-04    4
-      Virial theorem: -V/T =      2.008195
+@  3    -74.9418393228        4.61572D-02   -5.00D-03    3
+      Virial theorem: -V/T =      2.008317
+@      MULPOP O      -0.26; H       0.13; H       0.13; 
+   3  Level shift: doubly occupied orbital energies shifted by -2.50D-02
+ -----------------------------------------------------------------------------
+@  4    -74.9420796118        1.62177D-03   -2.40D-04    4
+      Virial theorem: -V/T =      2.008189
 @      MULPOP O      -0.25; H       0.13; H       0.13; 
  -----------------------------------------------------------------------------
-@  5    -74.9420799267        1.39275D-04   -3.06D-07    5
-      Virial theorem: -V/T =      2.008167
+@  5    -74.9420798855        4.33903D-04   -2.74D-07    5
+      Virial theorem: -V/T =      2.008170
 @      MULPOP O      -0.25; H       0.13; H       0.13; 
  -----------------------------------------------------------------------------
-@  6    -74.9420799311        2.22065D-05   -4.37D-09    6
-      Virial theorem: -V/T =      2.008168
-@      MULPOP O      -0.25; H       0.13; H       0.13; 
- -----------------------------------------------------------------------------
-@  7    -74.9420799312        3.02314D-07   -1.07D-10    7
+@  6    -74.9420799312        7.93453D-06   -4.57D-08    6
 
-@ *** DIIS converged in   7 iterations !
-@     Converged SCF energy, gradient:    -74.942079931208    3.02D-07
+@ *** DIIS converged in   6 iterations !
+@     Converged SCF energy, gradient:    -74.942079931201    7.93D-06
     - total time used in SIRFCK :              0.00 seconds
 
 
@@ -508,21 +515,21 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 
  Sym       Hartree-Fock orbital energies
 
-1 A     -20.26289163    -1.20969738    -0.54796466    -0.43652721    -0.38758673
-          0.47761871     0.58813927
+1 A     -20.26288857    -1.20969620    -0.54796393    -0.43652632    -0.38758510
+          0.47761910     0.58814008
 
-    E(LUMO) :     0.47761871 au (symmetry 1)
-  - E(HOMO) :    -0.38758673 au (symmetry 1)
+    E(LUMO) :     0.47761910 au (symmetry 1)
+  - E(HOMO) :    -0.38758510 au (symmetry 1)
   ------------------------------------------
-    gap     :     0.86520543 au
+    gap     :     0.86520421 au
 
- >>> Writing SIRIFC interface file
+ --- Writing SIRIFC interface file
 
- >>>> CPU and wall time for SCF :       0.073       0.010
+ CPU and wall time for SCF :       0.003       0.002
 
 
                        .-----------------------------------.
-                       | >>> Final results from SIRIUS <<< |
+                       | --- Final results from SIRIUS --- |
                        `-----------------------------------'
 
 
@@ -530,39 +537,37 @@ H  -1.638036840407   1.136548822547  -0.0000000000
 @    Spatial symmetry:            1 ( irrep  A   in C1  )
 @    Total charge of molecule:    0
 
-@    Final HF energy:             -74.942079931208                 
+@    Final HF energy:             -74.942079931201                 
 @    Nuclear repulsion:             8.002367061811
-@    Electronic energy:           -82.944446993019
+@    Electronic energy:           -82.944446993012
 
-@    Final gradient norm:           0.000000302314
+@    Final gradient norm:           0.000007934533
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
-File label for MO orbitals:  19Apr16   FOCKDIIS
+File label for MO orbitals:  12Feb17   FOCKDIIS
 
- (Only coefficients >0.0100 are printed.)
+ (Only coefficients > 0.0100 are printed.)
 
  Molecular orbitals for symmetry species 1  (A  )
  ------------------------------------------------
 
     Orbital         1        2        3        4        5        6        7
-   1 O   :1s    -0.9944   0.2392   0.0000  -0.0937   0.0000  -0.1116  -0.0000
-   2 O   :1s    -0.0241  -0.8857  -0.0000   0.4796  -0.0000   0.6696   0.0000
-   3 O   :2px    0.0000  -0.0000  -0.6073  -0.0000   0.0000   0.0000  -0.9192
-   4 O   :2py   -0.0032  -0.0859   0.0000  -0.7474   0.0000   0.7385   0.0000
-   5 O   :2pz   -0.0000   0.0000  -0.0000  -0.0000  -1.0000   0.0000  -0.0000
-   6 H   :1s     0.0046  -0.1440  -0.4530  -0.3295   0.0000  -0.7098   0.7325
-   7 H   :1s     0.0046  -0.1440   0.4530  -0.3295  -0.0000  -0.7098  -0.7325
+   1 O   :1s    -0.9944   0.2392  -0.0000  -0.0937  -0.0000  -0.1116   0.0000
+   2 O   :1s    -0.0241  -0.8857   0.0000   0.4796   0.0000   0.6696  -0.0000
+   3 O   :2px    0.0000  -0.0000  -0.6073  -0.0000   0.0000  -0.0000  -0.9192
+   4 O   :2py   -0.0032  -0.0859   0.0000  -0.7474  -0.0000   0.7385  -0.0000
+   5 O   :2pz   -0.0000  -0.0000  -0.0000   0.0000  -1.0000  -0.0000   0.0000
+   6 H   :1s     0.0046  -0.1440  -0.4530  -0.3295   0.0000  -0.7099   0.7325
+   7 H   :1s     0.0046  -0.1440   0.4530  -0.3295  -0.0000  -0.7099  -0.7325
 
-
-
- >>>> Total CPU  time used in SIRIUS :      0.15 seconds
- >>>> Total wall time used in SIRIUS :      0.04 seconds
+  Total CPU  time used in SIRIUS :   0.00 seconds
+  Total wall time used in SIRIUS :   0.00 seconds
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
 
@@ -582,13 +587,34 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
  ------------------------------------------------------------------------------
 
 
- <<<<<<<<<< OUTPUT FROM RESPONSE INPUT PROCESSING >>>>>>>>>>
+ -------- OUTPUT FROM RESPONSE INPUT PROCESSING --------
 
 
 
 
-   SCF energy         :      -74.942079931208113
- -- inactive part     :      -82.944446993018886
+ Linear Response calculation
+ ---------------------------
+
+ Print level                                    : IPRLR  =   2
+ Maximum number of iterations                   : MAXITL =  60
+ Threshold for relative convergence             : THCLR  = 1.000D-03
+ Maximum iterations in optimal orbital algorithm: MAXITO =   5
+
+  1 B-frequencies  2.000000D-02
+
+    3 second order properties calculated with symmetry no.    1 and labels:
+
+          XDIPLEN 
+          YDIPLEN 
+          ZDIPLEN 
+
+ Integral transformation: Total CPU and WALL times (sec)       0.000       0.000
+
+ Sorting integrals to Dirac format: Total CPU and WALL times (sec)       0.000       0.000
+
+
+   SCF energy         :      -74.942079931200837
+ -- inactive part     :      -82.944446993011610
  -- nuclear repulsion :        8.002367061810769
 
 
@@ -596,31 +622,131 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
                      *** RHF response calculation (TDHF) ***
                      ***************************************
 
+ ----------------------------------------------------------------
+ ----- Linear response calculation
+ ----- Symmetry of excitation/property operator(s)    1  ( A  )
+ ----------------------------------------------------------------
 
- >>>> Total CPU  time used in RESPONSE:   0.01 seconds
- >>>> Total wall time used in RESPONSE:   0.00 seconds
+ Number of excitations of this symmetry            0
+ Number of response properties of this symmetry    3
+ Number of C6/C8 properties of this symmetry       0
+
+
+ Perturbation symmetry.     KSYMOP:       1
+ Perturbation spin symmetry.TRPLET:       F
+ Orbital variables.         KZWOPT:      10
+ Configuration variables.   KZCONF:       0
+ Total number of variables. KZVAR :      10
+
+
+ RSPLR -- linear response calculation for symmetry 1  ( A  )
+ RSPLR -- operator label : XDIPLEN 
+ RSPLR -- operator spin  :   0
+ RSPLR -- frequencies :   0.020000
+ FREQ 2    2.0000000000000000E-002
+
+
+
+ ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
+
+ Operator symmetry = 1  ( A  ); triplet =   F
+
+
+ *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
+
+ Convergence of RSP solution vectors, threshold = 1.00D-03
+ ---------------------------------------------------------------
+ (dimension of paired reduced space:    8)
+ RSP solution vector no.    1; norm of residual   4.99D-16
+
+ *** RSPCTL MICROITERATIONS CONVERGED
+
+
+ RSPLR -- linear response calculation for symmetry 1  ( A  )
+ RSPLR -- operator label : YDIPLEN 
+ RSPLR -- operator spin  :   0
+ RSPLR -- frequencies :   0.020000
+ FREQ 2    2.0000000000000000E-002
+
+
+
+ ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
+
+ Operator symmetry = 1  ( A  ); triplet =   F
+
+RSPORT:    1 out of    1 new trial vectors linear dependent
+
+ *** MICROITERATIONS STOPPED DUE TO LINEAR DEPENDENCE BETWEEN NEW TRIAL VECTORS
+
+ *** WARNING : REQUESTED    1 SOLUTION VECTORS NOT CONVERGED
+
+ Convergence of RSP solution vectors, threshold = 1.00D-03
+ ---------------------------------------------------------------
+ (dimension of paired reduced space:    4)
+ RSP solution vector no.    1; norm of residual   5.46D-02
+
+ *** RSPCTL WARNING-MICROITERATIONS STOPPED BECAUSE
+     OF LINEAR DEPENDENCE BETWEEN NEW TRIAL VECTORS
+
+
+ RSPLR -- linear response calculation for symmetry 1  ( A  )
+ RSPLR -- operator label : ZDIPLEN 
+ RSPLR -- operator spin  :   0
+ RSPLR -- frequencies :   0.020000
+ FREQ 2    2.0000000000000000E-002
+
+
+
+ ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
+
+ Operator symmetry = 1  ( A  ); triplet =   F
+
+
+ *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
+
+ Convergence of RSP solution vectors, threshold = 1.00D-03
+ ---------------------------------------------------------------
+ (dimension of paired reduced space:    2)
+ RSP solution vector no.    1; norm of residual   2.92D-15
+
+ *** RSPCTL MICROITERATIONS CONVERGED
+
+
+           Final output of second order properties from linear response
+           ------------------------------------------------------------
+
+
+@ Spin symmetry of operators: singlet
+
+ Note that minus the linear response function: - << A; B >>(omega) is printed.
+ The results are of quadratic accuracy using Sellers formula.
+
+@ FREQUENCY DEPENDENT SECOND ORDER PROPERTIES WITH FREQUENCY :
+
+@    a.u.:  2.0000000D-02
+@    cm-1:  4.3894926D+03
+@    eV  :  5.4422768D-01
+@  kJ/mol:  5.2509992D+01
+@    nm  :  2.2781676D+03
+
+@ -<< XDIPLEN  ; XDIPLEN  >> =  7.943117439766D+00
+@ -<< XDIPLEN  ; YDIPLEN  >> = -2.025171968074D-14
+@ -<< XDIPLEN  ; ZDIPLEN  >> =  1.123307074605D-15
+@ -<< YDIPLEN  ; YDIPLEN  >> =  3.067218729920D+00
+@ -<< YDIPLEN  ; ZDIPLEN  >> = -4.237398155029D-16
+@ -<< ZDIPLEN  ; ZDIPLEN  >> =  5.054700945574D-02
+
+
+ Time used in linear response calculation is      0.00 CPU seconds for symmetry 1
+
+  Total CPU  time used in RESPONSE:   0.00 seconds
+  Total wall time used in RESPONSE:   0.00 seconds
 
 
                    .-------------------------------------------.
                    | End of Dynamic Property Section (RESPONS) |
                    `-------------------------------------------'
 
-
-
-        *****************************************************************
-        ******** Output from **PROPE input processing for ABACUS ********
-        *****************************************************************
-
-
-
- The following molecular properties will be calculated in this run:
- ------------------------------------------------------------------
-
- Default print level:        0
-
-      Static polarizabilities
-      Natural orbital connection is used
-      for perturbation dependent basis sets.
 
  Center of mass dipole origin  :    0.000000   -0.000000    0.000000
 
@@ -633,7 +759,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
 
@@ -643,7 +769,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  
 
 
@@ -651,8 +777,8 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
                              -----------------------
 
  O          0.0000000000           -0.1432258166            0.0000000000
- H          1.6380368404            1.1365488225            0.0000000000
- H         -1.6380368404            1.1365488225            0.0000000000
+ H          1.6380368404            1.1365488225           -0.0000000000
+ H         -1.6380368404            1.1365488225           -0.0000000000
 
 
 
@@ -676,11 +802,11 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
                    Scalar Breit-Pauli relativistic corrections
                    -------------------------------------------
 
-     Darwin correction:                          0.1295916552 au
-     Mass-velocity correction:                  -0.1671135814 au
+     Darwin correction:                          0.1295916530 au
+     Mass-velocity correction:                  -0.1671135795 au
 
-     Total relativistic correction:             -0.0375219262 au (0.0501%)
-     Non-relativistic + relativistic energy:   -74.9796018574 au
+     Total relativistic correction:             -0.0375219265 au ( 0.0501%)
+     Non-relativistic + relativistic energy:   -74.9796018577 au
 
 
 
@@ -691,7 +817,7 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
                                   -------------
 
                  au               Debye          C m (/(10**-30)
-              0.603521           1.533998           5.116866
+              0.603527           1.534013           5.116917
 
 
                              Dipole moment components
@@ -699,55 +825,13 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
                  au               Debye          C m (/(10**-30)
 
-      x      0.00000000         0.00000000         0.00000000
-      y      0.60352127         1.53399796         5.11686641
-      z      0.00000000         0.00000000         0.00000000
+      x     -0.00000000        -0.00000000        -0.00000000
+      y      0.60352718         1.53401298         5.11691651
+      z     -0.00000000        -0.00000000        -0.00000000
 
 
    Units:   1 a.u. =   2.54175 Debye 
             1 a.u. =   8.47835 (10**-30) C m (SI)
-
-
-
-
-                           Static polarizabilities (au)
-                           ----------------------------
-
-                         Ex          Ey          Ez
-
-            Ex       7.935562   -0.000000   -0.000000
-            Ey      -0.000000    3.068211    0.000000
-            Ez      -0.000000    0.000000    0.050386
-
-
-
-                      Static polarizabilities (angstroms**3)
-                      --------------------------------------
-
-                         Ex          Ey          Ez
-
-            Ex       1.175929   -0.000000   -0.000000
-            Ey      -0.000000    0.454662    0.000000
-            Ez      -0.000000    0.000000    0.007466
-
-
-
-                +--------------------------------------------------+
-                ! Principal values and axes of polarizability (au) !
-                +--------------------------------------------------+
-
-
-
-                value              x          y          z
-             ---------------------------------------------
-
-                7.9356          1.0000    -0.0000     0.0000
-                3.0682          0.0000     1.0000     0.0000
-                0.0504          0.0000     0.0000     1.0000
-
-
-            Mean value:    3.6847        Anisotropy:    6.8911
-
 
 
 
@@ -793,17 +877,17 @@ File label for MO orbitals:  19Apr16   FOCKDIIS
 
 
 
- >>>> Total CPU  time used in ABACUS:   0.32 seconds
- >>>> Total wall time used in ABACUS:   0.04 seconds
+  Total CPU  time used in ABACUS:   0.00 seconds
+  Total wall time used in ABACUS:   0.00 seconds
 
 
                    .-------------------------------------------.
                    | End of Static Property Section (ABACUS) - |
                    `-------------------------------------------'
 
- >>>> Total CPU  time used in DALTON:   0.61 seconds
- >>>> Total wall time used in DALTON:   0.18 seconds
+  Total CPU  time used in DALTON:   0.02 seconds
+  Total wall time used in DALTON:   0.01 seconds
 
  
-     Date and time (Linux)  : Tue Apr 19 18:31:51 2016
+     Date and time (Linux)  : Sun Feb 12 11:02:26 2017
      Host name              : copper                                  

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 
 from __future__ import print_function
 from __future__ import division
@@ -205,14 +205,17 @@ if __name__ == "__main__":
     print('nsorb: {} nsocc: {} nsvir: {} nsov: {}'.format(nsorb, nsocc, nsvir, nsov))
 
     # Form the dipole integrals in the occ-virt MO basis.
-    mat_dipole_x_MO_occ_virt = -2 * np.dot(C[:, :nocc].T, np.dot(mat_dipole_x, C[:, nocc:]))
-    mat_dipole_y_MO_occ_virt = -2 * np.dot(C[:, :nocc].T, np.dot(mat_dipole_y, C[:, nocc:]))
-    mat_dipole_z_MO_occ_virt = -2 * np.dot(C[:, :nocc].T, np.dot(mat_dipole_z, C[:, nocc:]))
+    mat_dipole_x_MO_occ_virt = np.dot(C[:, :nocc].T, np.dot(mat_dipole_x, C[:, nocc:]))
+    mat_dipole_y_MO_occ_virt = np.dot(C[:, :nocc].T, np.dot(mat_dipole_y, C[:, nocc:]))
+    mat_dipole_z_MO_occ_virt = np.dot(C[:, :nocc].T, np.dot(mat_dipole_z, C[:, nocc:]))
 
     # Re-pack the integrals as vectors.
     gp_dipole_x = repack_mat_to_vec_rows_cols(mat_dipole_x_MO_occ_virt)
     gp_dipole_y = repack_mat_to_vec_rows_cols(mat_dipole_y_MO_occ_virt)
     gp_dipole_z = repack_mat_to_vec_rows_cols(mat_dipole_z_MO_occ_virt)
+    gp_dipole_x_super = np.concatenate((gp_dipole_x, gp_dipole_x), axis=0)
+    gp_dipole_y_super = np.concatenate((gp_dipole_y, gp_dipole_y), axis=0)
+    gp_dipole_z_super = np.concatenate((gp_dipole_z, gp_dipole_z), axis=0)
 
     # Form the orbital Hessian for each Hamiltonian and spin case.
     H_CIS_MO_singlet = np.zeros(shape=(nov, nov))
@@ -224,9 +227,9 @@ if __name__ == "__main__":
     B_MO_singlet = form_rpa_b_matrix_mo_singlet(TEI_MO, nocc)
     B_MO_triplet = form_rpa_b_matrix_mo_triplet(TEI_MO, nocc)
     H_RPA_MO_singlet = np.bmat([[ A_MO_singlet,  B_MO_singlet],
-                                [-B_MO_singlet, -A_MO_singlet]])
+                                [ B_MO_singlet,  A_MO_singlet]])
     H_RPA_MO_triplet = np.bmat([[ A_MO_triplet,  B_MO_triplet],
-                                [-B_MO_triplet, -A_MO_triplet]])
+                                [ B_MO_triplet,  A_MO_triplet]])
     ApB_MO_singlet = A_MO_singlet + B_MO_singlet
     AmB_MO_singlet = A_MO_singlet - B_MO_singlet
     ApB_MO_triplet = A_MO_triplet + B_MO_triplet
@@ -262,6 +265,12 @@ if __name__ == "__main__":
     rspvec_AmB_triplet_dipole_x = np.dot(AmB_MO_triplet_inv, gp_dipole_x)
     rspvec_AmB_triplet_dipole_y = np.dot(AmB_MO_triplet_inv, gp_dipole_y)
     rspvec_AmB_triplet_dipole_z = np.dot(AmB_MO_triplet_inv, gp_dipole_z)
+    rspvec_RPA_singlet_dipole_x = np.dot(H_RPA_MO_singlet_inv, gp_dipole_x_super)
+    rspvec_RPA_singlet_dipole_y = np.dot(H_RPA_MO_singlet_inv, gp_dipole_y_super)
+    rspvec_RPA_singlet_dipole_z = np.dot(H_RPA_MO_singlet_inv, gp_dipole_z_super)
+    rspvec_RPA_triplet_dipole_x = np.dot(H_RPA_MO_triplet_inv, gp_dipole_x_super)
+    rspvec_RPA_triplet_dipole_y = np.dot(H_RPA_MO_triplet_inv, gp_dipole_y_super)
+    rspvec_RPA_triplet_dipole_z = np.dot(H_RPA_MO_triplet_inv, gp_dipole_z_super)
 
     # TDA singlet
     polarizability_A_singlet = np.empty((3, 3))
@@ -274,8 +283,9 @@ if __name__ == "__main__":
     polarizability_A_singlet[2, 0] = np.dot(rspvec_A_singlet_dipole_z, gp_dipole_x)
     polarizability_A_singlet[2, 1] = np.dot(rspvec_A_singlet_dipole_z, gp_dipole_y)
     polarizability_A_singlet[2, 2] = np.dot(rspvec_A_singlet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, A singlet [a.u] -> TDA/CIS')
-    print(polarizability_A_singlet)
+    print('Static dipole polarizability, A singlet [a.u] -> TDA/CIS')
+    print(polarizability_A_singlet * 4)
+
     # TDA triplet
     polarizability_A_triplet = np.empty((3, 3))
     polarizability_A_triplet[0, 0] = np.dot(rspvec_A_triplet_dipole_x, gp_dipole_x)
@@ -287,8 +297,9 @@ if __name__ == "__main__":
     polarizability_A_triplet[2, 0] = np.dot(rspvec_A_triplet_dipole_z, gp_dipole_x)
     polarizability_A_triplet[2, 1] = np.dot(rspvec_A_triplet_dipole_z, gp_dipole_y)
     polarizability_A_triplet[2, 2] = np.dot(rspvec_A_triplet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, A triplet [a.u] -> TDA/CIS')
-    print(polarizability_A_triplet)
+    print('Static dipole polarizability, A triplet [a.u] -> TDA/CIS')
+    print(polarizability_A_triplet * 4)
+
     # RPA singlet
     polarizability_ApB_singlet = np.empty((3, 3))
     polarizability_ApB_singlet[0, 0] = np.dot(rspvec_ApB_singlet_dipole_x, gp_dipole_x)
@@ -300,9 +311,10 @@ if __name__ == "__main__":
     polarizability_ApB_singlet[2, 0] = np.dot(rspvec_ApB_singlet_dipole_z, gp_dipole_x)
     polarizability_ApB_singlet[2, 1] = np.dot(rspvec_ApB_singlet_dipole_z, gp_dipole_y)
     polarizability_ApB_singlet[2, 2] = np.dot(rspvec_ApB_singlet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, (A + B) singlet [a.u] -> RPA')
-    print(polarizability_ApB_singlet)
-    # ???
+    print('Static dipole polarizability, (A + B) singlet [a.u] -> RPA (real operators)')
+    print(polarizability_ApB_singlet * 4)
+
+    # RPA triplet
     polarizability_ApB_triplet = np.empty((3, 3))
     polarizability_ApB_triplet[0, 0] = np.dot(rspvec_ApB_triplet_dipole_x, gp_dipole_x)
     polarizability_ApB_triplet[0, 1] = np.dot(rspvec_ApB_triplet_dipole_x, gp_dipole_y)
@@ -313,9 +325,9 @@ if __name__ == "__main__":
     polarizability_ApB_triplet[2, 0] = np.dot(rspvec_ApB_triplet_dipole_z, gp_dipole_x)
     polarizability_ApB_triplet[2, 1] = np.dot(rspvec_ApB_triplet_dipole_z, gp_dipole_y)
     polarizability_ApB_triplet[2, 2] = np.dot(rspvec_ApB_triplet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, (A + B) triplet [a.u] -> ???')
-    print(polarizability_ApB_triplet)
-    # ???
+    print('Static dipole polarizability, (A + B) triplet [a.u] -> RPA (real operators)')
+    print(polarizability_ApB_triplet * 4)
+
     polarizability_AmB_singlet = np.empty((3, 3))
     polarizability_AmB_singlet[0, 0] = np.dot(rspvec_AmB_singlet_dipole_x, gp_dipole_x)
     polarizability_AmB_singlet[0, 1] = np.dot(rspvec_AmB_singlet_dipole_x, gp_dipole_y)
@@ -326,8 +338,9 @@ if __name__ == "__main__":
     polarizability_AmB_singlet[2, 0] = np.dot(rspvec_AmB_singlet_dipole_z, gp_dipole_x)
     polarizability_AmB_singlet[2, 1] = np.dot(rspvec_AmB_singlet_dipole_z, gp_dipole_y)
     polarizability_AmB_singlet[2, 2] = np.dot(rspvec_AmB_singlet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, (A - B) singlet [a.u] -> ???')
-    print(polarizability_AmB_singlet)
+    print('Static dipole polarizability, (A - B) singlet [a.u] -> RPA (imaginary operators)')
+    print(polarizability_AmB_singlet * 4)
+
     polarizability_AmB_triplet = np.empty((3, 3))
     polarizability_AmB_triplet[0, 0] = np.dot(rspvec_AmB_triplet_dipole_x, gp_dipole_x)
     polarizability_AmB_triplet[0, 1] = np.dot(rspvec_AmB_triplet_dipole_x, gp_dipole_y)
@@ -338,5 +351,103 @@ if __name__ == "__main__":
     polarizability_AmB_triplet[2, 0] = np.dot(rspvec_AmB_triplet_dipole_z, gp_dipole_x)
     polarizability_AmB_triplet[2, 1] = np.dot(rspvec_AmB_triplet_dipole_z, gp_dipole_y)
     polarizability_AmB_triplet[2, 2] = np.dot(rspvec_AmB_triplet_dipole_z, gp_dipole_z)
-    print('Dipole polarizability, (A - B) triplet [a.u] -> RPA?')
-    print(polarizability_AmB_triplet)
+    print('Static dipole polarizability, (A - B) triplet [a.u] -> RPA (imaginary operators)')
+    print(polarizability_AmB_triplet * 4)
+
+    polarizability_RPA_singlet = np.empty((3, 3))
+    polarizability_RPA_singlet[0, 0] = np.dot(rspvec_RPA_singlet_dipole_x, gp_dipole_x_super)
+    polarizability_RPA_singlet[0, 1] = np.dot(rspvec_RPA_singlet_dipole_x, gp_dipole_y_super)
+    polarizability_RPA_singlet[0, 2] = np.dot(rspvec_RPA_singlet_dipole_x, gp_dipole_z_super)
+    polarizability_RPA_singlet[1, 0] = np.dot(rspvec_RPA_singlet_dipole_y, gp_dipole_x_super)
+    polarizability_RPA_singlet[1, 1] = np.dot(rspvec_RPA_singlet_dipole_y, gp_dipole_y_super)
+    polarizability_RPA_singlet[1, 2] = np.dot(rspvec_RPA_singlet_dipole_y, gp_dipole_z_super)
+    polarizability_RPA_singlet[2, 0] = np.dot(rspvec_RPA_singlet_dipole_z, gp_dipole_x_super)
+    polarizability_RPA_singlet[2, 1] = np.dot(rspvec_RPA_singlet_dipole_z, gp_dipole_y_super)
+    polarizability_RPA_singlet[2, 2] = np.dot(rspvec_RPA_singlet_dipole_z, gp_dipole_z_super)
+    print('Static dipole polarizability, (A + B) singlet [a.u] -> RPA (supervector)')
+    # TODO why divide by 2 again?
+    print(polarizability_RPA_singlet * 4 / 2.0)
+    # print(np.sqrt(polarizability_RPA_singlet))
+
+    polarizability_RPA_triplet = np.empty((3, 3))
+    polarizability_RPA_triplet[0, 0] = np.dot(rspvec_RPA_triplet_dipole_x, gp_dipole_x_super)
+    polarizability_RPA_triplet[0, 1] = np.dot(rspvec_RPA_triplet_dipole_x, gp_dipole_y_super)
+    polarizability_RPA_triplet[0, 2] = np.dot(rspvec_RPA_triplet_dipole_x, gp_dipole_z_super)
+    polarizability_RPA_triplet[1, 0] = np.dot(rspvec_RPA_triplet_dipole_y, gp_dipole_x_super)
+    polarizability_RPA_triplet[1, 1] = np.dot(rspvec_RPA_triplet_dipole_y, gp_dipole_y_super)
+    polarizability_RPA_triplet[1, 2] = np.dot(rspvec_RPA_triplet_dipole_y, gp_dipole_z_super)
+    polarizability_RPA_triplet[2, 0] = np.dot(rspvec_RPA_triplet_dipole_z, gp_dipole_x_super)
+    polarizability_RPA_triplet[2, 1] = np.dot(rspvec_RPA_triplet_dipole_z, gp_dipole_y_super)
+    polarizability_RPA_triplet[2, 2] = np.dot(rspvec_RPA_triplet_dipole_z, gp_dipole_z_super)
+    print('Static dipole polarizability, (A + B) triplet [a.u] -> RPA (supervector)')
+    print(polarizability_RPA_triplet * 4 / 2.0)
+    # print(np.sqrt(polarizability_RPA_triplet))
+
+    # For the dynamic polarizability, the frequency (in a.u.) gets
+    # subtracted from the orbital Hessian diagonal.
+    # H_CIS_MO_singlet_omega = np.zeros(shape=(nov, nov))
+    # form_hamiltonian_cis_mo_singlet(H_CIS_MO_singlet_omega, E_MO, TEI_MO, nocc)
+    # H_CIS_MO_singlet_omega -= (omega * np.eye(nov))
+    # H_CIS_MO_singlet_omega_inv = np.linalg.inv(H_CIS_MO_singlet_omega)
+    # rspvec_A_singlet_omega_dipole_x = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_x)
+    # rspvec_A_singlet_omega_dipole_y = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_y)
+    # rspvec_A_singlet_omega_dipole_z = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_z)
+    # polarizability_A_singlet_omega = np.empty((3, 3))
+    # polarizability_A_singlet_omega[0, 0] = np.dot(rspvec_A_singlet_omega_dipole_x, gp_dipole_x)
+    # polarizability_A_singlet_omega[0, 1] = np.dot(rspvec_A_singlet_omega_dipole_x, gp_dipole_y)
+    # polarizability_A_singlet_omega[0, 2] = np.dot(rspvec_A_singlet_omega_dipole_x, gp_dipole_z)
+    # polarizability_A_singlet_omega[1, 0] = np.dot(rspvec_A_singlet_omega_dipole_y, gp_dipole_x)
+    # polarizability_A_singlet_omega[1, 1] = np.dot(rspvec_A_singlet_omega_dipole_y, gp_dipole_y)
+    # polarizability_A_singlet_omega[1, 2] = np.dot(rspvec_A_singlet_omega_dipole_y, gp_dipole_z)
+    # polarizability_A_singlet_omega[2, 0] = np.dot(rspvec_A_singlet_omega_dipole_z, gp_dipole_x)
+    # polarizability_A_singlet_omega[2, 1] = np.dot(rspvec_A_singlet_omega_dipole_z, gp_dipole_y)
+    # polarizability_A_singlet_omega[2, 2] = np.dot(rspvec_A_singlet_omega_dipole_z, gp_dipole_z)
+    # print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> TDA singlet')
+    # print(polarizability_A_singlet_omega * 4)
+
+    # frequencies of incident radiation in a.u.
+    omegas = (0.0, 0.02, 0.06, 0.1)
+
+    for omega in omegas:
+        fd_superoverlap = omega * np.bmat([[np.eye(nov), np.zeros(shape=(nov, nov))],
+                                           [np.zeros(shape=(nov, nov)), -np.eye(nov)]])
+        H_RPA_MO_singlet_omega = H_RPA_MO_singlet - fd_superoverlap
+        H_RPA_MO_singlet_omega_inv = np.linalg.inv(H_RPA_MO_singlet_omega)
+        rspvec_RPA_singlet_omega_dipole_x = np.dot(H_RPA_MO_singlet_omega_inv, gp_dipole_x_super)
+        rspvec_RPA_singlet_omega_dipole_y = np.dot(H_RPA_MO_singlet_omega_inv, gp_dipole_y_super)
+        rspvec_RPA_singlet_omega_dipole_z = np.dot(H_RPA_MO_singlet_omega_inv, gp_dipole_z_super)
+        polarizability_RPA_singlet_omega = np.empty((3, 3))
+        polarizability_RPA_singlet_omega[0, 0] = np.dot(rspvec_RPA_singlet_omega_dipole_x, gp_dipole_x_super)
+        polarizability_RPA_singlet_omega[0, 1] = np.dot(rspvec_RPA_singlet_omega_dipole_x, gp_dipole_y_super)
+        polarizability_RPA_singlet_omega[0, 2] = np.dot(rspvec_RPA_singlet_omega_dipole_x, gp_dipole_z_super)
+        polarizability_RPA_singlet_omega[1, 0] = np.dot(rspvec_RPA_singlet_omega_dipole_y, gp_dipole_x_super)
+        polarizability_RPA_singlet_omega[1, 1] = np.dot(rspvec_RPA_singlet_omega_dipole_y, gp_dipole_y_super)
+        polarizability_RPA_singlet_omega[1, 2] = np.dot(rspvec_RPA_singlet_omega_dipole_y, gp_dipole_z_super)
+        polarizability_RPA_singlet_omega[2, 0] = np.dot(rspvec_RPA_singlet_omega_dipole_z, gp_dipole_x_super)
+        polarizability_RPA_singlet_omega[2, 1] = np.dot(rspvec_RPA_singlet_omega_dipole_z, gp_dipole_y_super)
+        polarizability_RPA_singlet_omega[2, 2] = np.dot(rspvec_RPA_singlet_omega_dipole_z, gp_dipole_z_super)
+        print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> RPA singlet supervector')
+        print(polarizability_RPA_singlet_omega * 4 / 2)
+
+    for omega in omegas:
+        fd_superoverlap = omega * np.bmat([[np.eye(nov), np.zeros(shape=(nov, nov))],
+                                           [np.zeros(shape=(nov, nov)), -np.eye(nov)]])
+        H_CIS_MO_singlet_super = np.bmat([[ A_MO_singlet,  np.zeros(shape=(nov, nov))],
+                                          [ np.zeros(shape=(nov, nov)),  A_MO_singlet]])
+        H_CIS_MO_singlet_omega = H_CIS_MO_singlet_super - fd_superoverlap
+        H_CIS_MO_singlet_omega_inv = np.linalg.inv(H_CIS_MO_singlet_omega)
+        rspvec_CIS_singlet_omega_dipole_x = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_x_super)
+        rspvec_CIS_singlet_omega_dipole_y = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_y_super)
+        rspvec_CIS_singlet_omega_dipole_z = np.dot(H_CIS_MO_singlet_omega_inv, gp_dipole_z_super)
+        polarizability_CIS_singlet_omega = np.empty((3, 3))
+        polarizability_CIS_singlet_omega[0, 0] = np.dot(rspvec_CIS_singlet_omega_dipole_x, gp_dipole_x_super)
+        polarizability_CIS_singlet_omega[0, 1] = np.dot(rspvec_CIS_singlet_omega_dipole_x, gp_dipole_y_super)
+        polarizability_CIS_singlet_omega[0, 2] = np.dot(rspvec_CIS_singlet_omega_dipole_x, gp_dipole_z_super)
+        polarizability_CIS_singlet_omega[1, 0] = np.dot(rspvec_CIS_singlet_omega_dipole_y, gp_dipole_x_super)
+        polarizability_CIS_singlet_omega[1, 1] = np.dot(rspvec_CIS_singlet_omega_dipole_y, gp_dipole_y_super)
+        polarizability_CIS_singlet_omega[1, 2] = np.dot(rspvec_CIS_singlet_omega_dipole_y, gp_dipole_z_super)
+        polarizability_CIS_singlet_omega[2, 0] = np.dot(rspvec_CIS_singlet_omega_dipole_z, gp_dipole_x_super)
+        polarizability_CIS_singlet_omega[2, 1] = np.dot(rspvec_CIS_singlet_omega_dipole_z, gp_dipole_y_super)
+        polarizability_CIS_singlet_omega[2, 2] = np.dot(rspvec_CIS_singlet_omega_dipole_z, gp_dipole_z_super)
+        print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> CIS singlet supervector')
+        print(polarizability_CIS_singlet_omega * 4 / 2)
