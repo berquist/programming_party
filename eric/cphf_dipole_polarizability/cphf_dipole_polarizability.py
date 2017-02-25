@@ -235,6 +235,9 @@ if __name__ == "__main__":
     ApB_MO_triplet = A_MO_triplet + B_MO_triplet
     AmB_MO_triplet = A_MO_triplet - B_MO_triplet
 
+    # np.testing.assert_allclose(H_CIS_MO_singlet, A_MO_singlet)
+    # np.testing.assert_allclose(H_CIS_MO_triplet, A_MO_triplet)
+
     # Explicitly invert the orbital Hessian for each Hamiltonian and
     # spin case.
     H_CIS_MO_singlet_inv = np.linalg.inv(H_CIS_MO_singlet)
@@ -383,6 +386,7 @@ if __name__ == "__main__":
     print(polarizability_RPA_triplet * 4 / 2.0)
     # print(np.sqrt(polarizability_RPA_triplet))
 
+    # This doesn't work when not doing the supervector formalism!
     # For the dynamic polarizability, the frequency (in a.u.) gets
     # subtracted from the orbital Hessian diagonal.
     # H_CIS_MO_singlet_omega = np.zeros(shape=(nov, nov))
@@ -405,12 +409,13 @@ if __name__ == "__main__":
     # print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> TDA singlet')
     # print(polarizability_A_singlet_omega * 4)
 
+    superoverlap = np.bmat([[np.eye(nov), np.zeros(shape=(nov, nov))],
+                            [np.zeros(shape=(nov, nov)), -np.eye(nov)]])
     # frequencies of incident radiation in a.u.
     omegas = (0.0, 0.02, 0.06, 0.1)
 
     for omega in omegas:
-        fd_superoverlap = omega * np.bmat([[np.eye(nov), np.zeros(shape=(nov, nov))],
-                                           [np.zeros(shape=(nov, nov)), -np.eye(nov)]])
+        fd_superoverlap = omega * superoverlap
         H_RPA_MO_singlet_omega = H_RPA_MO_singlet - fd_superoverlap
         H_RPA_MO_singlet_omega_inv = np.linalg.inv(H_RPA_MO_singlet_omega)
         rspvec_RPA_singlet_omega_dipole_x = np.dot(H_RPA_MO_singlet_omega_inv, gp_dipole_x_super)
@@ -429,9 +434,13 @@ if __name__ == "__main__":
         print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> RPA singlet supervector')
         print(polarizability_RPA_singlet_omega * 4 / 2)
 
+        # X_dipole_x = rspvec_RPA_singlet_omega_dipole_x.T[:nov, :]
+        # Y_dipole_x = rspvec_RPA_singlet_omega_dipole_x.T[nov:, :]
+        # print(X_dipole_x.T)
+        # print(Y_dipole_x.T)
+
     for omega in omegas:
-        fd_superoverlap = omega * np.bmat([[np.eye(nov), np.zeros(shape=(nov, nov))],
-                                           [np.zeros(shape=(nov, nov)), -np.eye(nov)]])
+        fd_superoverlap = omega * superoverlap
         H_CIS_MO_singlet_super = np.bmat([[ A_MO_singlet,  np.zeros(shape=(nov, nov))],
                                           [ np.zeros(shape=(nov, nov)),  A_MO_singlet]])
         H_CIS_MO_singlet_omega = H_CIS_MO_singlet_super - fd_superoverlap
@@ -451,3 +460,25 @@ if __name__ == "__main__":
         polarizability_CIS_singlet_omega[2, 2] = np.dot(rspvec_CIS_singlet_omega_dipole_z, gp_dipole_z_super)
         print(f'Dynamic dipole polarizability @ {omega:f} a.u. -> CIS singlet supervector')
         print(polarizability_CIS_singlet_omega * 4 / 2)
+
+        # X_dipole_x = rspvec_CIS_singlet_omega_dipole_x.T[:nov, :]
+        # Y_dipole_x = rspvec_CIS_singlet_omega_dipole_x.T[nov:, :]
+        # print(X_dipole_x.T)
+        # print(Y_dipole_x.T)
+
+    H_RPA_MO_singlet_flip = np.bmat([[  A_MO_singlet,   B_MO_singlet],
+                                     [ -B_MO_singlet,  -A_MO_singlet]])
+    w, v = npl.eig(H_RPA_MO_singlet)
+    wf, vf = npl.eig(H_RPA_MO_singlet_flip)
+    # reminder: columns are eigenvectors
+    # print(np.diag(np.dot(vf.T, np.dot(superoverlap, vf))))
+    for i in range(len(w)):
+        xt = v[:nov, i]
+        xb = v[nov:, i]
+        xpos = np.vstack((xt, xb))
+        xneg = np.vstack((xb, xt))
+        # print(np.dot(xpos.T, np.dot(H_RPA_MO_singlet, xpos)))
+        # print(np.dot(xneg.T, np.dot(H_RPA_MO_singlet, xneg)))
+        # print(np.dot(x.T, np.dot(superoverlap, x)))
+    # ep = np.diag(np.dot(v.T, np.dot(H_RPA_MO_singlet, v)))
+    # assert w == ep

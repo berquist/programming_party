@@ -32,7 +32,7 @@ def mo_so_4index(TEI_SO, TEI_MO):
                     lint = TEI_MO[p//2, r//2, q//2, s//2] * (p % 2 == r % 2) * (q % 2 == s % 2)
                     rint = TEI_MO[p//2, s//2, q//2, r//2] * (p % 2 == s % 2) * (q % 2 == r % 2)
                     TEI_SO[p, q, r, s] = lint - rint
-
+    print('sum(ints): {}'.format(np.sum(TEI_SO)))
     return
 
 
@@ -80,6 +80,36 @@ def build_fock_spin_orbital(TEI_SO, H, nsocc):
                 F_SO[p, q] += TEI_SO[p, m, q, m]
 
     return F_SO
+
+
+def build_diagonal_2(F_SO, nsocc):
+    """Build the 2-index energy matrix."""
+
+    nsorb = F_SO.shape[0]
+
+    D = np.zeros(shape=(nsorb, nsorb))
+
+    for i in range(0, nsocc):
+        for a in range(nsocc, nsorb):
+            D[i, a] += (F_SO[i, i] - F_SO[a, a])
+    print('sum(D2): {}'.format(np.sum(D)))
+    return D
+
+
+def build_diagonal_4(F_SO, nsocc):
+    """Build the 4-index energy matrix."""
+
+    nsorb = F_SO.shape[0]
+
+    D = np.zeros(shape=(nsorb, nsorb, nsorb, nsorb))
+
+    for i in range(0, nsocc):
+        for j in range(0, nsocc):
+            for a in range(nsocc, nsorb):
+                for b in range(nsocc, nsorb):
+                    D[i, j, a, b] += (F_SO[i, i] + F_SO[j, j] - F_SO[a, a] - F_SO[b, b])
+    print('sum(D4): {}'.format(np.sum(D)))
+    return D
 
 
 def build_intermediates_2index(TEI_SO, F_SO, T1, T2, tau_twiddle, nsocc):
@@ -187,36 +217,6 @@ def build_intermediates_4index(TEI_SO, F_SO, T1, T2, tau, nsocc):
                             W[m, b, e, j] -= (0.5*T2[j, n, f, b] + T1[j, f]*T1[n, b]) * TEI_SO[m, n, e, f]
 
     return W
-
-
-def build_diagonal_2(F_SO, nsocc):
-    """Build the 2-index energy matrix."""
-
-    nsorb = F_SO.shape[0]
-
-    D = np.zeros(shape=(nsorb, nsorb))
-
-    for i in range(0, nsocc):
-        for a in range(nsocc, nsorb):
-            D[i, a] += (F_SO[i, i] - F_SO[a, a])
-
-    return D
-
-
-def build_diagonal_4(F_SO, nsocc):
-    """Build the 4-index energy matrix."""
-
-    nsorb = F_SO.shape[0]
-
-    D = np.zeros(shape=(nsorb, nsorb, nsorb, nsorb))
-
-    for i in range(0, nsocc):
-        for j in range(0, nsocc):
-            for a in range(nsocc, nsorb):
-                for b in range(nsocc, nsorb):
-                    D[i, j, a, b] += (F_SO[i, i] + F_SO[j, j] - F_SO[a, a] - F_SO[b, b])
-
-    return D
 
 
 def update_amplitudes_T1(TEI_SO, F_SO, T1, T2, nsocc, D1, F):

@@ -1,3 +1,5 @@
+import pytest
+
 import numpy as np
 
 
@@ -19,30 +21,54 @@ def read_file(filename):
             energies_ev.append(e_ev)
 
     assert len(iters) == len(energies_au) == len(energies_ev) == (iters[-1] + 1)
-    return (np.array(energies_au), np.array(energies_ev))
+    # return (np.array(energies_au), np.array(energies_ev))
+    return np.array(energies_au)
 
-if __name__ == '__main__':
 
-    filename_cis = "h2o_sto3g_output_cis.txt"
-    filename_rpa1 = "h2o_sto3g_output_rpa1.txt"
-    filename_rpa2 = "h2o_sto3g_output_rpa2.txt"
+energies_params = ['h2o_sto3g', 'h2o_dz', 'h2o_dzp', 'ch4_sto3g']
+@pytest.fixture(params=energies_params)
+def energies_from_file(request):
+    filename_cis = '{}_output_cis.txt'.format(request.param)
+    filename_rpa1 = '{}_output_rpa1.txt'.format(request.param)
+    filename_rpa2 = '{}_output_rpa2.txt'.format(request.param)
 
-    energies_au_cis, energies_ev_cis = read_file(filename_cis)
-    energies_au_rpa1, energies_ev_rpa1 = read_file(filename_rpa1)
-    energies_au_rpa2, energies_ev_rpa2 = read_file(filename_rpa2)
+    energies_au_cis = read_file(filename_cis)
+    energies_au_rpa1 = read_file(filename_rpa1)
+    energies_au_rpa2 = read_file(filename_rpa2)
 
-    # here we test the consistency of the references data
+    return energies_au_cis, energies_au_rpa1, energies_au_rpa2
 
-    # read from a file, this is nov = nocc * nvirt
-    dim = 40
-    assert energies_au_cis.shape[0] == dim
+
+def test_dim(energies_from_file):
+    energies_au_cis, energies_au_rpa1, energies_au_rpa2 = energies_from_file
+
+    dim = energies_au_cis.shape[0]
     assert energies_au_rpa1.shape[0] == 2 * dim
     assert energies_au_rpa2.shape[0] == dim
 
-    # these should be all zeros
-    print(energies_au_rpa1[dim:] - energies_au_rpa2)
 
-    # these should all be zeros for these simple cases, but
+def test_zeros_excitation(energies_from_file):
+    energies_au_cis, energies_au_rpa1, energies_au_rpa2 = energies_from_file
+    dim = energies_au_cis.shape[0]
+
+    # These shoudl all be zeros in all cases.
+    should_be_zeros = energies_au_rpa1[dim:] - energies_au_rpa2
+    assert np.zeros(dim).all() == should_be_zeros.all()
+
+
+def test_zeros_deexcitation(energies_from_file):
+    energies_au_cis, energies_au_rpa1, energies_au_rpa2 = energies_from_file
+    dim = energies_au_cis.shape[0]
+
+    # These should all be zeros for these simple cases, but
     # deexcitation energies aren't necessarily the same as excitation
-    # energies
-    print(energies_au_rpa1[:dim][::-1] + energies_au_rpa2)
+    # energies, right?
+    should_be_zeros = energies_au_rpa1[:dim][::-1] + energies_au_rpa2
+    assert np.zeros(dim).all() == should_be_zeros.all()
+
+
+
+if __name__ == '__main__':
+
+    pass
+

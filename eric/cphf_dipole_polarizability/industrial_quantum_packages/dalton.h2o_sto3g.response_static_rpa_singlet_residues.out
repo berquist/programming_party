@@ -141,7 +141,7 @@
   Hans Agren,               KTH Stockholm,                Sweden      (SIRIUS module, RESPONS, MC-SCRF solvation model)
  --------------------------------------------------------------------------------
 
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
  * Work memory size             :    64000000 =  488.28 megabytes.
@@ -194,12 +194,10 @@ H  -1.638036840407   1.136548822547  -0.000000000000
 .HF
 **RESPONSE
 *LINEAR
+.SINGLE RESIDUE
 .DIPLEN
-.FREQUE
-1
-0.10
-.PRINT
-10
+.ROOTS
+5
 **END OF DALTON INPUT
 
 
@@ -419,7 +417,7 @@ H  -1.638036840407   1.136548822547  -0.000000000000
  **********************************************************************
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
  Title lines from ".mol" input file:
@@ -546,7 +544,7 @@ H  -1.638036840407   1.136548822547  -0.000000000000
 @    Final gradient norm:           0.000007934533
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
 File label for MO orbitals:  12Feb17   FOCKDIIS
@@ -569,7 +567,7 @@ File label for MO orbitals:  12Feb17   FOCKDIIS
   Total wall time used in SIRIUS :   0.00 seconds
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
 
@@ -594,49 +592,28 @@ File label for MO orbitals:  12Feb17   FOCKDIIS
 
 
 
- Linear Response calculation
- ---------------------------
+  Linear Response single residue calculation
+ -------------------------------------------
 
- Print level                                    : IPRLR  =  10
- Maximum number of iterations                   : MAXITL =  60
- Threshold for relative convergence             : THCLR  = 1.000D-03
+
+    3 input options by user.
+
+ Print level                                    : IPRPP  =   2
+ Maximum number of iterations for eigenval.eqs. : MAXITP =  60
+ Threshold for convergence of eigenvalue eqs.   : THCPP  = 1.000D-03
  Maximum iterations in optimal orbital algorithm: MAXITO =   5
 
-  1 B-frequencies  1.000000D-01
+      5 Excitation energies are calculated for symmetry no.    1
 
- General print level in RESPONS is IPRRSP =        10
+      3 property residues are calculated with labels:
 
- RSPSYM: number of property vectors :
+               XDIPLEN 
+               YDIPLEN 
+               ZDIPLEN 
 
- NGPPP(I) ,I=1,NSYM    0
- NGPLR(I) ,I=1,NSYM    3
- NGPC6(I) ,I=1,NSYM    0
- NAQROP(I),I=1,NSYM    0
- NBQROP(I),I=1,NSYM    0
- NCQROP(I),I=1,NSYM    0
- NASMOP(I),I=1,NSYM    0
- NBSMOP(I),I=1,NSYM    0
- NESRS(I) ,I=1,NSYM    0
- NESRT(I) ,I=1,NSYM    0
- NACROP(I),I=1,NSYM    0
- NBCROP(I),I=1,NSYM    0
- NCCROP(I),I=1,NSYM    0
- NDCROP(I),I=1,NSYM    0
- NATMOP(I),I=1,NSYM    0
- NBTMOP(I),I=1,NSYM    0
- NCTMOP(I),I=1,NSYM    0
- NATPOP(I),I=1,NSYM    0
- NBTPOP(I),I=1,NSYM    0
+ Integral transformation: Total CPU and WALL times (sec)       0.000       0.001
 
-    3 second order properties calculated with symmetry no.    1 and labels:
-
-          XDIPLEN 
-          YDIPLEN 
-          ZDIPLEN 
-
- Integral transformation: Total CPU and WALL times (sec)       0.003       0.001
-
- Sorting integrals to Dirac format: Total CPU and WALL times (sec)       0.000       0.000
+ Sorting integrals to Dirac format: Total CPU and WALL times (sec)       0.003       0.000
 
 
    SCF energy         :      -74.942079931200837
@@ -653,8 +630,8 @@ File label for MO orbitals:  12Feb17   FOCKDIIS
  ----- Symmetry of excitation/property operator(s)    1  ( A  )
  ----------------------------------------------------------------
 
- Number of excitations of this symmetry            0
- Number of response properties of this symmetry    3
+ Number of excitations of this symmetry            5
+ Number of response properties of this symmetry    0
  Number of C6/C8 properties of this symmetry       0
 
 
@@ -665,733 +642,144 @@ File label for MO orbitals:  12Feb17   FOCKDIIS
  Total number of variables. KZVAR :      10
 
 
- RSPLR -- linear response calculation for symmetry 1  ( A  )
- RSPLR -- operator label : XDIPLEN 
- RSPLR -- operator spin  :   0
- RSPLR -- frequencies :   0.100000
 
-PRPCTL test output:  Reference state expectation value for XDIPLEN 
-
-     XDIPLEN  inactive part: 2.39754370D-16
-     XDIPLEN  active part  : 0.00000000D+00
-     XDIPLEN  total        : 2.39754370D-16
- FREQ 2   0.10000000000000001     
-
-
-
- ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
+ --- EXCITATION ENERGIES AND TRANSITION MOMENT CALCULATION (MCTDHF) ---
 
  Operator symmetry = 1  ( A  ); triplet =   F
 
 
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS:     120
-
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS IN RSPNEX:     120
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 2.83945224D+00
- Z + Y norm squared = 5.34696262D-02
-
- RSPORT: b-vector, norm**2:     1 2.83945D+00
- AFTER START ROUTINE BINMEM T
-
- ** RSPCTL MICROITERATION NUMBER    1
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    1
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2
-       1       1.30779698
-       2      -0.16091272     1.30779698
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2
-       1       1.99974959
-       2      -0.00000000    -1.99974959
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                2           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    1 linear transformations is      8.10972337D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    2    0    0
- Determinant of reduced matrix is  1.64 * 10 **  0.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   2.411230D+00   1.974877D+00
-    2  -2.411230D+00  -1.388437D+00
-
- ROOT:  1 RESIDUAL TOT: 2.49890D-01 CONF: 0.00000D+00 ORB: 2.49890D-01
-          BNORM: 2.41410D+00 EIVAL: 1.00000D-01
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 4.36293454D-03
- Z + Y norm squared = 1.59153204D-04
-
- RSPORT: b-vector, norm**2:     1 4.36066D-03
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- ** RSPCTL MICROITERATION NUMBER    2
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    2
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4
-       1       1.30779698
-       2      -0.16091272     1.30779698
-       3       0.03934222    -0.02021383     2.06089212
-       4      -0.02021383     0.03934222    -0.48651907     2.06089212
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4
-       1       1.99974959
-       2      -0.00000000    -1.99974959
-       3       0.00532925     0.02193204     1.75384049
-       4      -0.02193204    -0.00532925    -0.00000000    -1.75384049
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                4           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    2 linear transformations is      8.12878226D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    4    0    0
- Determinant of reduced matrix is  6.54 * 10 **  0.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   2.411230D+00   1.977950D+00
-    2  -2.411230D+00  -1.390500D+00
-
-    3  -5.447508D-02  -7.345554D-02
-    4   5.447508D-02   4.911193D-02
-
- ROOT:  1 RESIDUAL TOT: 4.62729D-02 CONF: 0.00000D+00 ORB: 4.62729D-02
-          BNORM: 2.41942D+00 EIVAL: 1.00000D-01
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 5.93287622D-05
- Z + Y norm squared = 1.04257726D-05
-
- RSPORT: b-vector, norm**2:     1 5.43674D-05
-
- RSPORT: b-vector, norm**2:     1 1.00000D+00
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- ** RSPCTL MICROITERATION NUMBER    3
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    3
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.30779698
-       2      -0.16091272     1.30779698
-       3       0.03934222    -0.02021383     2.06089212
-       4      -0.02021383     0.03934222    -0.48651907     2.06089212
-       5      -0.00514682     0.01056917    -1.00033026    -0.10196169     3.14377893
-       6       0.01056917    -0.00514682    -0.10196169    -1.00033026     0.68018385     3.14377893
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.99974959
-       2      -0.00000000    -1.99974959
-       3       0.00532925     0.02193204     1.75384049
-       4      -0.02193204    -0.00532925    -0.00000000    -1.75384049
-       5       0.00530792    -0.01944152     0.00422443     0.94378476     1.76052204
-       6       0.01944152    -0.00530792    -0.94378476    -0.00422443    -0.00000000    -1.76052204
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                6           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    3 linear transformations is      8.12901999D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    6    0    0
- Determinant of reduced matrix is  4.21 * 10 **  1.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   2.411230D+00   1.978044D+00
-    2  -2.411230D+00  -1.390477D+00
-
-    3  -5.447508D-02  -7.839789D-02
-    4   5.447508D-02   4.942449D-02
-
-    5   1.531372D-02  -9.498285D-03
-    6  -1.531372D-02   4.968067D-03
-
- ROOT:  1 RESIDUAL TOT: 1.63658D-02 CONF: 0.00000D+00 ORB: 1.63658D-02
-          BNORM: 2.41967D+00 EIVAL: 1.00000D-01
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 1.40770301D-06
- Z + Y norm squared = 6.38555053D-07
-
- RSPORT: b-vector, norm**2:     1 3.20537D-07
-
- RSPORT: b-vector, norm**2:     1 1.00000D+00
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- ** RSPCTL MICROITERATION NUMBER    4
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    4
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.30779698
-       2      -0.16091272     1.30779698
-       3       0.03934222    -0.02021383     2.06089212
-       4      -0.02021383     0.03934222    -0.48651907     2.06089212
-       5      -0.00514682     0.01056917    -1.00033026    -0.10196169     3.14377893
-       6       0.01056917    -0.00514682    -0.10196169    -1.00033026     0.68018385     3.14377893
-       7       0.07724982    -0.03289084     1.65206201    -0.02223127    -6.94655802    -1.14873512
-       8      -0.03289084     0.07724982    -0.02223127     1.65206201    -1.14873512    -6.94655802
-
-               Column   7     Column   8
-       7      38.66113489
-       8      -0.49931406    38.66113489
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.99974959
-       2      -0.00000000    -1.99974959
-       3       0.00532925     0.02193204     1.75384049
-       4      -0.02193204    -0.00532925    -0.00000000    -1.75384049
-       5       0.00530792    -0.01944152     0.00422443     0.94378476     1.76052204
-       6       0.01944152    -0.00530792    -0.94378476    -0.00422443    -0.00000000    -1.76052204
-       7       0.00149552    -0.00915216    -0.02152592     0.17978669    -0.04527422    -0.08578307
-       8       0.00915216    -0.00149552    -0.17978669     0.02152592     0.08578307     0.04527422
-
-               Column   7     Column   8
-       7       1.98940164
-       8      -0.00000000    -1.98940164
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                8           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    4 linear transformations is      8.12903153D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    8    0    0
- Determinant of reduced matrix is  2.18 * 10 **  4.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   2.411230D+00   1.978095D+00
-    2  -2.411230D+00  -1.390480D+00
-
-    3  -5.447508D-02  -7.878901D-02
-    4   5.447508D-02   4.923797D-02
-
-    5   1.531372D-02  -1.128303D-02
-    6  -1.531372D-02   5.407956D-03
-
-    7   1.102889D-01  -6.875317D-04
-    8  -1.102889D-01   1.755433D-04
-
- ROOT:  1 RESIDUAL TOT: 1.29088D-15 CONF: 0.00000D+00 ORB: 1.29088D-15
-          BNORM: 2.41973D+00 EIVAL: 1.00000D-01
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    0 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    0
-    0 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
+ *** THE REQUESTED    5 SOLUTION VECTORS CONVERGED
 
  Convergence of RSP solution vectors, threshold = 1.00D-03
  ---------------------------------------------------------------
- (dimension of paired reduced space:    8)
- RSP solution vector no.    1; norm of residual   5.33D-16
+ (dimension of paired reduced space:   20)
+ RSP solution vector no.    1; norm of residual   9.74D-17
+ RSP solution vector no.    2; norm of residual   1.06D-16
+ RSP solution vector no.    3; norm of residual   8.60D-15
+ RSP solution vector no.    4; norm of residual   4.56D-15
+ RSP solution vector no.    5; norm of residual   6.44D-15
 
  *** RSPCTL MICROITERATIONS CONVERGED
 
- EIGENVECTOR NUMBER     1
+@ Transition operator type:    XDIPLEN 
+@ STATE NO:    1 *TRANSITION MOMENT: -4.37351916E-15 *ENERGY(eV):   9.6539896    
+@ STATE NO:    2 *TRANSITION MOMENT: -1.73340674E-15 *ENERGY(eV):   11.301345    
+@ STATE NO:    3 *TRANSITION MOMENT:  2.65329031E-14 *ENERGY(eV):   13.608431    
+@ STATE NO:    4 *TRANSITION MOMENT:  0.19486467     *ENERGY(eV):   15.003583    
+@ STATE NO:    5 *TRANSITION MOMENT:  -1.5918207     *ENERGY(eV):   17.694762    
 
-     Configuration operator symmetry = 1
-     >> NO ELEMENTS <<
+@ Transition operator type:    YDIPLEN 
+@ STATE NO:    1 *TRANSITION MOMENT:  1.23437931E-15 *ENERGY(eV):   9.6539896    
+@ STATE NO:    2 *TRANSITION MOMENT:  3.40910221E-15 *ENERGY(eV):   11.301345    
+@ STATE NO:    3 *TRANSITION MOMENT: -0.40537646     *ENERGY(eV):   13.608431    
+@ STATE NO:    4 *TRANSITION MOMENT:  1.89598797E-14 *ENERGY(eV):   15.003583    
+@ STATE NO:    5 *TRANSITION MOMENT:  5.60841494E-15 *ENERGY(eV):   17.694762    
 
-     Response orbital operator symmetry = 1
-     (only scaled elements abs greater than   10.00 % of max abs value)
+@ Transition operator type:    ZDIPLEN 
+@ STATE NO:    1 *TRANSITION MOMENT: -9.45408816E-02 *ENERGY(eV):   9.6539896    
+@ STATE NO:    2 *TRANSITION MOMENT:  1.90436573E-15 *ENERGY(eV):   11.301345    
+@ STATE NO:    3 *TRANSITION MOMENT: -1.18855710E-16 *ENERGY(eV):   13.608431    
+@ STATE NO:    4 *TRANSITION MOMENT:  1.66882215E-16 *ENERGY(eV):   15.003583    
+@ STATE NO:    5 *TRANSITION MOMENT:  2.73232211E-16 *ENERGY(eV):   17.694762    
 
-      Index(r,s)      r      s        (r s) operator      (s r) operator      (r s) scaled        (s r) scaled
-      ----------    -----  -----      --------------      --------------      --------------      --------------
-           5         3(1)   6(1)        1.4691699538       -1.0407159825        2.0777200741       -1.4717946571
-           8         4(1)   7(1)       -1.3206505698        0.9180923895       -1.8676819470        1.2983787088
 
-        8 elements with absolute value ≤ 2.08D-01 not printed.
+ **************************************************************************************
+ *** @ Excit. operator sym 1 & ref. state sym 1 => excited state symmetry 1  ( A  ) ***
+ **************************************************************************************
 
- The numbers in parenthesis give the orbital symmetry.
 
 
- RSPLR -- linear response calculation for symmetry 1  ( A  )
- RSPLR -- operator label : YDIPLEN 
- RSPLR -- operator spin  :   0
- RSPLR -- frequencies :   0.100000
+ @ Excited state no:    1 in symmetry 1  ( A  )
+ ----------------------------------------------
 
-PRPCTL test output:  Reference state expectation value for YDIPLEN 
+@ Excitation energy :  0.35477760     au
+@                      9.6539896     eV;   77864.682     cm-1;   931.46844     kJ / mol
 
-     YDIPLEN  inactive part:     0.52376393
-     YDIPLEN  active part  :     0.00000000
-     YDIPLEN  total        :     0.52376393
- FREQ 2   0.10000000000000001     
+@ Total energy :      -74.587302     au
 
+@ Operator type:    XDIPLEN 
+@ Oscillator strength (LENGTH)   :  4.52404586E-30  (Transition moment : -4.37351916E-15 )
 
+@ Operator type:    YDIPLEN 
+@ Oscillator strength (LENGTH)   :  3.60381262E-31  (Transition moment :  1.23437931E-15 )
 
- ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
+@ Operator type:    ZDIPLEN 
+@ Oscillator strength (LENGTH)   :  2.11399632E-03  (Transition moment : -9.45408816E-02 )
 
- Operator symmetry = 1  ( A  ); triplet =   F
 
+ @ Excited state no:    2 in symmetry 1  ( A  )
+ ----------------------------------------------
 
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS:     120
+@ Excitation energy :  0.41531680     au
+@                      11.301345     eV;   91151.500     cm-1;   1090.4141     kJ / mol
 
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS IN RSPNEX:     120
+@ Total energy :      -74.526763     au
 
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 1.65993501D+00
- Z + Y norm squared = 3.27376906D-02
+@ Operator type:    XDIPLEN 
+@ Oscillator strength (LENGTH)   :  8.31934619E-31  (Transition moment : -1.73340674E-15 )
 
- RSPORT: b-vector, norm**2:     1 1.65994D+00
- AFTER START ROUTINE BINMEM T
+@ Operator type:    YDIPLEN 
+@ Oscillator strength (LENGTH)   :  3.21786842E-30  (Transition moment :  3.40910221E-15 )
 
- ** RSPCTL MICROITERATION NUMBER    1
+@ Operator type:    ZDIPLEN 
+@ Oscillator strength (LENGTH)   :  1.00412771E-30  (Transition moment :  1.90436573E-15 )
 
 
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
+ @ Excited state no:    3 in symmetry 1  ( A  )
+ ----------------------------------------------
 
- TRIAL VECTORS FOR RESTART:    1
+@ Excitation energy :  0.50010065     au
+@                      13.608431     eV;   109759.41     cm-1;   1313.0141     kJ / mol
 
- RSPRED: REDUCED HESSIAN MATRIX:
+@ Total energy :      -74.441979     au
 
-               Column   1     Column   2
-       1       1.68001261
-       2      -0.58234420     1.68001261
-    ==== End of matrix output ====
+@ Operator type:    XDIPLEN 
+@ Oscillator strength (LENGTH)   :  2.34712222E-28  (Transition moment :  2.65329031E-14 )
 
- RSPRED: REDUCED METRIC MATRIX:
+@ Operator type:    YDIPLEN 
+@ Oscillator strength (LENGTH)   :  5.47877176E-02  (Transition moment : -0.40537646     )
 
-               Column   1     Column   2
-       1       1.98838501
-       2      -0.00000000    -1.98838501
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                2           1
+@ Operator type:    ZDIPLEN 
+@ Oscillator strength (LENGTH)   :  4.70984121E-33  (Transition moment : -1.18855710E-16 )
 
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    1 linear transformations is      3.01377187D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    2    0    0
- Determinant of reduced matrix is  2.44 * 10 **  0.0
 
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
+ @ Excited state no:    4 in symmetry 1  ( A  )
+ ----------------------------------------------
 
-    1   1.831622D+00   9.717360D-01
-    2  -1.831622D+00  -6.736759D-01
+@ Excitation energy :  0.55137156     au
+@                      15.003583     eV;   121012.07     cm-1;   1447.6258     kJ / mol
 
- ROOT:  1 RESIDUAL TOT: 4.86853D-01 CONF: 0.00000D+00 ORB: 4.86853D-01
-          BNORM: 1.18242D+00 EIVAL: 1.00000D-01
+@ Total energy :      -74.390708     au
 
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 2.70622491D-02
- Z + Y norm squared = 9.58729778D-04
+@ Operator type:    XDIPLEN 
+@ Oscillator strength (LENGTH)   :  1.39578758E-02  (Transition moment :  0.19486467     )
 
- RSPORT: b-vector, norm**2:     1 2.68609D-02
+@ Operator type:    YDIPLEN 
+@ Oscillator strength (LENGTH)   :  1.32136942E-28  (Transition moment :  1.89598797E-14 )
 
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
+@ Operator type:    ZDIPLEN 
+@ Oscillator strength (LENGTH)   :  1.02370119E-32  (Transition moment :  1.66882215E-16 )
 
- ** RSPCTL MICROITERATION NUMBER    2
 
+ @ Excited state no:    5 in symmetry 1  ( A  )
+ ----------------------------------------------
 
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
+@ Excitation energy :  0.65027054     au
+@                      17.694762     eV;   142717.89     cm-1;   1707.2850     kJ / mol
 
- TRIAL VECTORS FOR RESTART:    2
+@ Total energy :      -74.291809     au
 
- RSPRED: REDUCED HESSIAN MATRIX:
+@ Operator type:    XDIPLEN 
+@ Oscillator strength (LENGTH)   :   1.0984773      (Transition moment :  -1.5918207     )
 
-               Column   1     Column   2     Column   3     Column   4
-       1       1.68001261
-       2      -0.58234420     1.68001261
-       3       0.40087591    -0.18264880     1.75004574
-       4      -0.18264880     0.40087591    -0.47211376     1.75004574
-    ==== End of matrix output ====
+@ Operator type:    YDIPLEN 
+@ Oscillator strength (LENGTH)   :  1.36358776E-29  (Transition moment :  5.60841494E-15 )
 
- RSPRED: REDUCED METRIC MATRIX:
+@ Operator type:    ZDIPLEN 
+@ Oscillator strength (LENGTH)   :  3.23643293E-32  (Transition moment :  2.73232211E-16 )
 
-               Column   1     Column   2     Column   3     Column   4
-       1       1.98838501
-       2      -0.00000000    -1.98838501
-       3       0.03389786    -0.17938619     1.52911559
-       4       0.17938619    -0.03389786    -0.00000000    -1.52911559
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                4           1
 
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    2 linear transformations is      3.12295132D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    4    0    0
- Determinant of reduced matrix is  6.17 * 10 **  0.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   1.831622D+00   1.031551D+00
-    2  -1.831622D+00  -7.002595D-01
-
-    3   1.504801D-01  -1.963857D-01
-    4  -1.504801D-01   1.296983D-01
-
- ROOT:  1 RESIDUAL TOT: 7.70492D-02 CONF: 0.00000D+00 ORB: 7.70492D-02
-          BNORM: 1.26880D+00 EIVAL: 1.00000D-01
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 1.11740900D-03
- Z + Y norm squared = 1.37844785D-05
-
- RSPORT: b-vector, norm**2:     1 1.04806D-03
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- ** RSPCTL MICROITERATION NUMBER    3
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    3
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.68001261
-       2      -0.58234420     1.68001261
-       3       0.40087591    -0.18264880     1.75004574
-       4      -0.18264880     0.40087591    -0.47211376     1.75004574
-       5       0.00086457    -0.07631014    -0.47825615     0.26817674    16.09292214
-       6      -0.07631014     0.00086457     0.26817674    -0.47825615    14.43842098    16.09292214
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.98838501
-       2      -0.00000000    -1.98838501
-       3       0.03389786    -0.17938619     1.52911559
-       4       0.17938619    -0.03389786    -0.00000000    -1.52911559
-       5      -0.08759140    -0.07096930     0.95340786     0.31788925    -0.74665013
-       6       0.07096930     0.08759140    -0.31788925    -0.95340786    -0.00000000     0.74665013
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                6           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    3 linear transformations is      3.12730359D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    6    0    0
- Determinant of reduced matrix is  2.52 * 10 **  2.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   1.831622D+00   1.040167D+00
-    2  -1.831622D+00  -7.027925D-01
-
-    3   1.504801D-01  -2.181789D-01
-    4  -1.504801D-01   1.388520D-01
-
-    5   1.414711D-01  -4.051422D-02
-    6  -1.414711D-01   4.016130D-02
-
- ROOT:  1 RESIDUAL TOT: 3.48913D-03 CONF: 0.00000D+00 ORB: 3.48913D-03
-          BNORM: 1.28297D+00 EIVAL: 1.00000D-01
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 8.77378052D-07
- Z + Y norm squared = 1.74713060D-06
- Z - Y norm squared = 7.62550552D-09
-
- RSPORT: b-vector, norm**2:     1 6.72247D-07
-
- RSPORT: b-vector, norm**2:     1 1.00000D+00
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    1 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    1
-    1 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- ** RSPCTL MICROITERATION NUMBER    4
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    4
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.68001261
-       2      -0.58234420     1.68001261
-       3       0.40087591    -0.18264880     1.75004574
-       4      -0.18264880     0.40087591    -0.47211376     1.75004574
-       5       0.00086457    -0.07631014    -0.47825615     0.26817674    16.09292214
-       6      -0.07631014     0.00086457     0.26817674    -0.47825615    14.43842098    16.09292214
-       7      -0.05495000     0.10767296    -0.34803203     0.02219664     8.26374466     8.03943653
-       8       0.10767296    -0.05495000     0.02219664    -0.34803203     8.03943653     8.26374466
-
-               Column   7     Column   8
-       7      25.93204338
-       8     -14.13669853    25.93204338
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2     Column   3     Column   4     Column   5     Column   6
-       1       1.98838501
-       2      -0.00000000    -1.98838501
-       3       0.03389786    -0.17938619     1.52911559
-       4       0.17938619    -0.03389786    -0.00000000    -1.52911559
-       5      -0.08759140    -0.07096930     0.95340786     0.31788925    -0.74665013
-       6       0.07096930     0.08759140    -0.31788925    -0.95340786    -0.00000000     0.74665013
-       7       0.01386103    -0.00977500    -0.56150380     0.55059096     1.54258310     0.20050421
-       8       0.00977500    -0.01386103    -0.55059096     0.56150380    -0.20050421    -1.54258310
-
-               Column   7     Column   8
-       7       0.98056659
-       8      -0.00000000    -0.98056659
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                8           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    4 linear transformations is      3.12730756D+00
- INERTIA (POS,ZER,NEG) of reduced matrix is    8    0    0
- Determinant of reduced matrix is  3.03 * 10 **  4.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   1.831622D+00   1.040278D+00
-    2  -1.831622D+00  -7.026966D-01
-
-    3   1.504801D-01  -2.183351D-01
-    4  -1.504801D-01   1.386844D-01
-
-    5   1.414711D-01  -4.017753D-02
-    6  -1.414711D-01   4.068862D-02
-
-    7  -8.511348D-02  -8.185417D-04
-    8   8.511348D-02  -8.019689D-04
-
- ROOT:  1 RESIDUAL TOT: 7.65066D-16 CONF: 0.00000D+00 ORB: 7.65066D-16
-          BNORM: 1.28302D+00 EIVAL: 1.00000D-01
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    0 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    0
-    0 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
-
- Convergence of RSP solution vectors, threshold = 1.00D-03
- ---------------------------------------------------------------
- (dimension of paired reduced space:    8)
- RSP solution vector no.    1; norm of residual   5.96D-16
-
- *** RSPCTL MICROITERATIONS CONVERGED
-
- EIGENVECTOR NUMBER     1
-
-     Configuration operator symmetry = 1
-     >> NO ELEMENTS <<
-
-     Response orbital operator symmetry = 1
-     (only scaled elements abs greater than   10.00 % of max abs value)
-
-      Index(r,s)      r      s        (r s) operator      (s r) operator      (r s) scaled        (s r) scaled
-      ----------    -----  -----      --------------      --------------      --------------      --------------
-           3         2(1)   6(1)       -0.0998234861        0.0877401606       -0.1411717279        0.1240833251
-           6         3(1)   7(1)       -0.5744228951        0.4309444280       -0.8123566488        0.6094474546
-           7         4(1)   6(1)        0.8868226106       -0.5712652951        1.2541565633       -0.8078911281
-
-        7 elements with absolute value ≤ 1.25D-01 not printed.
-
- The numbers in parenthesis give the orbital symmetry.
-
-
- RSPLR -- linear response calculation for symmetry 1  ( A  )
- RSPLR -- operator label : ZDIPLEN 
- RSPLR -- operator spin  :   0
- RSPLR -- frequencies :   0.100000
-
-PRPCTL test output:  Reference state expectation value for ZDIPLEN 
-
-     ZDIPLEN  inactive part: 8.50899360D-17
-     ZDIPLEN  active part  : 0.00000000D+00
-     ZDIPLEN  total        : 8.50899360D-17
- FREQ 2   0.10000000000000001     
-
-
-
- ---  SOLVING SETS OF LINEAR EQUATIONS FOR LINEAR RESPONSE PROPERTIES ---
-
- Operator symmetry = 1  ( A  ); triplet =   F
-
-
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS:     120
-
- MAXIMUM NUMBER OF SIMULTANEOUS TRIAL VECTORS IN RSPNEX:     120
-
- ** TEST OF Z = Y OR Z = -Y:
- (Z Y) norm squared = 1.36989171D-02
- Z + Y norm squared = 3.61132253D-04
-
- RSPORT: b-vector, norm**2:     1 1.36989D-02
- AFTER START ROUTINE BINMEM T
-
- ** RSPCTL MICROITERATION NUMBER    1
-
-
-Output from "RSPOLI". NCSIM,NOSIM=         0         1
-TRPLET,HSROHF,DFTADD         F         F         F
-TDHF,NASHT         T         0
-
- TRIAL VECTORS FOR RESTART:    1
-
- RSPRED: REDUCED HESSIAN MATRIX:
-
-               Column   1     Column   2
-       1       0.71292220
-       2      -0.06920614     0.71292220
-    ==== End of matrix output ====
-
- RSPRED: REDUCED METRIC MATRIX:
-
-               Column   1     Column   2
-       1       2.00000000
-       2      -0.00000000    -2.00000000
-    ==== End of matrix output ====
-  AFREQ,KZYRED,IGD  0.10000000000000001                2           1
-
- GP * SOLUTION vector at frequency     0.10000 a.u.
- after    1 linear transformations is      5.47350068D-02
- INERTIA (POS,ZER,NEG) of reduced matrix is    2    0    0
- Determinant of reduced matrix is  4.63 * 10 ** -1.0
-
- REDUCED PROPERTY VECTOR AND REDUCED SOLUTION:
-
-    1   1.403720D-01   2.555386D-01
-    2  -1.403720D-01  -1.343895D-01
-
- ROOT:  1 RESIDUAL TOT: 8.39316D-16 CONF: 0.00000D+00 ORB: 8.39316D-16
-          BNORM: 2.88722D-01 EIVAL: 1.00000D-01
-
- NUMBER OF TRIAL VECTORS IN THIS LOAD    1   OFFSET FOR THIS LOAD    0
-    0 NON-CONVERGED SOLUTION VECTORS THIS LOAD, TOTAL:    0
-    0 LINEAR INDEPENDENT TRIAL VECTORS ADDED TO PREVIOUS    0
-
- *** THE REQUESTED    1 SOLUTION VECTORS CONVERGED
-
- Convergence of RSP solution vectors, threshold = 1.00D-03
- ---------------------------------------------------------------
- (dimension of paired reduced space:    2)
- RSP solution vector no.    1; norm of residual   2.91D-15
-
- *** RSPCTL MICROITERATIONS CONVERGED
-
- EIGENVECTOR NUMBER     1
-
-     Configuration operator symmetry = 1
-     >> NO ELEMENTS <<
-
-     Response orbital operator symmetry = 1
-     (only scaled elements abs greater than   10.00 % of max abs value)
-
-      Index(r,s)      r      s        (r s) operator      (s r) operator      (r s) scaled        (s r) scaled
-      ----------    -----  -----      --------------      --------------      --------------      --------------
-           9         5(1)   6(1)       -0.2555386438        0.1343895249       -0.3613862158        0.1900554888
-
-        9 elements with absolute value ≤ 3.61D-02 not printed.
-
- The numbers in parenthesis give the orbital symmetry.
-
-
-           Final output of second order properties from linear response
-           ------------------------------------------------------------
-
-
-@ Spin symmetry of operators: singlet
-
- Note that minus the linear response function: - << A; B >>(omega) is printed.
- The results are of quadratic accuracy using Sellers formula.
-
-PRPCTL test output:  Reference state expectation value for XDIPLEN 
-
-     XDIPLEN  inactive part: 2.39754370D-16
-     XDIPLEN  active part  : 0.00000000D+00
-     XDIPLEN  total        : 2.39754370D-16
-
-PRPCTL test output:  Reference state expectation value for YDIPLEN 
-
-     YDIPLEN  inactive part:     0.52376393
-     YDIPLEN  active part  :     0.00000000
-     YDIPLEN  total        :     0.52376393
-
-PRPCTL test output:  Reference state expectation value for ZDIPLEN 
-
-     ZDIPLEN  inactive part: 8.50899360D-17
-     ZDIPLEN  active part  : 0.00000000D+00
-     ZDIPLEN  total        : 8.50899360D-17
-
-@ FREQUENCY DEPENDENT SECOND ORDER PROPERTIES WITH FREQUENCY :
-
-@    a.u.:  1.0000000D-01
-@    cm-1:  2.1947463D+04
-@    eV  :  2.7211384D+00
-@  kJ/mol:  2.6254996D+02
-@    nm  :  4.5563353D+02
-
-@ -<< XDIPLEN  ; XDIPLEN  >> =  8.129031525505D+00
-@ -<< XDIPLEN  ; YDIPLEN  >> = -2.162762481813D-14
-@ -<< XDIPLEN  ; ZDIPLEN  >> =  1.289800409333D-15
-@ -<< YDIPLEN  ; YDIPLEN  >> =  3.127307556642D+00
-@ -<< YDIPLEN  ; ZDIPLEN  >> = -4.775138232235D-16
-@ -<< ZDIPLEN  ; ZDIPLEN  >> =  5.473500675813D-02
-
-
- Time used in linear response calculation is      0.00 CPU seconds for symmetry 1
+ Time used in polarization propagator calculation is      0.00 CPU seconds for symmetry 1
 
   Total CPU  time used in RESPONSE:   0.00 seconds
   Total wall time used in RESPONSE:   0.00 seconds
@@ -1413,7 +801,7 @@ PRPCTL test output:  Reference state expectation value for ZDIPLEN
 
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
 
@@ -1423,7 +811,7 @@ PRPCTL test output:  Reference state expectation value for ZDIPLEN
 
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
 
 
@@ -1543,5 +931,5 @@ PRPCTL test output:  Reference state expectation value for ZDIPLEN
   Total wall time used in DALTON:   0.02 seconds
 
  
-     Date and time (Linux)  : Sun Feb 12 14:48:59 2017
+     Date and time (Linux)  : Sun Feb 12 13:34:20 2017
      Host name              : copper                                  
