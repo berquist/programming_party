@@ -105,12 +105,16 @@ arma::vec build_diis_zero_vec(size_t len) {
 int main()
 {
 
-  size_t NElec = 10;
-  size_t NOcc = NElec / 2;
-  size_t NBasis = 26;
-  size_t M = idx4(NBasis - 1, NBasis - 1, NBasis - 1, NBasis - 1) + 1;
+  const size_t NElec = 10;
+  const size_t NOcc = NElec / 2;
+  const size_t NBasis = 26;
+  const size_t M = idx4(NBasis - 1, NBasis - 1, NBasis - 1, NBasis - 1) + 1;
 
-  size_t i, j, k, l;
+  // size_t i, j, k, l;
+  size_t i = 0;
+  size_t j = 0;
+  size_t k = 0;
+  size_t l = 0;
   double val;
   size_t mu, nu, lam, sig;
 
