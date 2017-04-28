@@ -343,7 +343,7 @@ def calc_ccsd_energy(TEI_SO, F_SO, T1, T2, nsocc):
     return E_CCSD
 
 
-if __name__ == '__main__':
+def main():
 
     args = getargs()
 
@@ -373,6 +373,8 @@ if __name__ == '__main__':
     # If everything's working right up to this point, we should be
     # able to calculate the MP2 energy.
     E_MP2 = calc_mp2_energy(TEI_SO, T2, nsocc)
+
+    assert abs(E_MP2 - -0.049149636120) < 1.0e-14
 
     print('E(MP2): {:20.12f}'.format(E_MP2))
 
@@ -414,3 +416,9 @@ if __name__ == '__main__':
         print(t(iteration, E_CCSD, np.sum(T1), np.sum(T2)))
 
         iteration += 1
+
+    return
+
+
+if __name__ == '__main__':
+    main()
