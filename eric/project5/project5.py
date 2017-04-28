@@ -269,10 +269,10 @@ def update_amplitudes_T2(TEI_SO, F_SO, T1, T2, nsocc, D2, W, tau):
                         tmp_normal = 0.0
                         tmp_perm_ab = 0.0
                         for m in range(0, nsocc):
-                            tmp_normal += (-0.5) * T1[m, b] * F[m, e]
-                            tmp_perm_ab += (-0.5) * T1[m, a] * F[m, e]
-                        normal += T2[i, j, a, e] * (F[b, e] + tmp_normal)
-                        perm_ab += T2[i, j, b, e] * (F[a, e] + tmp_perm_ab)
+                            tmp_normal += (-0.5) * T1[m, b] * F_SO[m, e]
+                            tmp_perm_ab += (-0.5) * T1[m, a] * F_SO[m, e]
+                        normal += T2[i, j, a, e] * (F_SO[b, e] + tmp_normal)
+                        perm_ab += T2[i, j, b, e] * (F_SO[a, e] + tmp_perm_ab)
                     uT2[i, j, a, b] += (normal - perm_ab)
                     # 2
                     normal = 0.0
@@ -281,10 +281,10 @@ def update_amplitudes_T2(TEI_SO, F_SO, T1, T2, nsocc, D2, W, tau):
                         tmp_normal = 0.0
                         tmp_perm_ij = 0.0
                         for e in range(nsocc, nsorb):
-                            tmp_normal += (0.5) * T1[j, e] * F[m, e]
-                            tmp_perm_ij += (0.5) * T1[i, e] * F[m, e]
-                        normal += (-1.0) * T2[i, m, a, b] * (F[m, j] + tmp_normal)
-                        perm_ij += (-1.0) * T2[j, m, a, b] * (F[m, i] + tmp_perm_ij)
+                            tmp_normal += (0.5) * T1[j, e] * F_SO[m, e]
+                            tmp_perm_ij += (0.5) * T1[i, e] * F_SO[m, e]
+                        normal += (-1.0) * T2[i, m, a, b] * (F_SO[m, j] + tmp_normal)
+                        perm_ij += (-1.0) * T2[j, m, a, b] * (F_SO[m, i] + tmp_perm_ij)
                     uT2[i, j, a, b] += (-1.0) * (normal - perm_ij)
                     # 3
                     for m in range(0, nsocc):
