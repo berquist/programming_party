@@ -56,15 +56,12 @@ def calc_mp2_energy(TEI_SO, T2, nsocc):
 
     nsorb = TEI_SO.shape[0]
 
-    E_MP2 = 0.0
+    o = slice(0, nsocc)
+    v = slice(nsocc, nsorb)
 
-    for i in range(0, nsocc):
-        for j in range(0, nsocc):
-            for a in range(nsocc, nsorb):
-                for b in range(nsocc, nsorb):
-                    E_MP2 += TEI_SO[i, j, a, b] * T2[i, j, a, b]
+    E_MP2 = np.einsum('ijab,ijab->', TEI_SO[o, o, v, v], T2[o, o, v, v]) / 4.0
 
-    return E_MP2 / 4
+    return E_MP2
 
 
 def build_fock_spin_orbital(TEI_SO, H, nsocc):
