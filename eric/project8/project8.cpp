@@ -5,14 +5,14 @@
 /*!
  * @brief Calculate the Hartree-Fock electronic energy.
  */
-double calc_elec_energy(arma::mat& P, arma::mat& H, arma::mat& F) {
+double calc_elec_energy(const arma::mat& P, const arma::mat& H, const arma::mat& F) {
   return arma::accu(P % (H + F));
 }
 
 /*!
  * @brief Form the density matrix from the MO coefficients.
  */
-void build_density(arma::mat& P, arma::mat& C, size_t NOcc) {
+void build_density(arma::mat& P, const arma::mat& C, size_t NOcc) {
   P = C.cols(0, NOcc-1) * C.cols(0, NOcc-1).t();
 }
 
@@ -20,7 +20,7 @@ void build_density(arma::mat& P, arma::mat& C, size_t NOcc) {
  * @brief Build the Fock matrix from the density, one-electron,
  * and two-electron integrals.
  */
-void build_fock(arma::mat& F, arma::mat& P, arma::mat& H, arma::vec& ERI) {
+void build_fock(arma::mat& F, const arma::mat& P, const arma::mat& H, const arma::vec& ERI) {
   for (size_t mu = 0; mu < H.n_rows; mu++) {
     for (size_t nu = 0; nu < H.n_cols; nu++) {
       F(mu, nu) = H(mu, nu);
@@ -36,7 +36,7 @@ void build_fock(arma::mat& F, arma::mat& P, arma::mat& H, arma::vec& ERI) {
 /*!
  * @brief Calculate the RMS deviation between two density matrices.
  */
-double rmsd_density(arma::mat& P_new, arma::mat& P_old) {
+double rmsd_density(const arma::mat& P_new, const arma::mat& P_old) {
   return sqrt(arma::accu(arma::pow((P_new - P_old), 2)));
 }
 
@@ -44,7 +44,7 @@ double rmsd_density(arma::mat& P_new, arma::mat& P_old) {
  * @brief Perform Hartree "damping" by mixing a fraction of old density
  * with the new density to aid convergence.
  */
-void mix_density(arma::mat& P_new, arma::mat& P_old, double alpha) {
+void mix_density(arma::mat& P_new, const arma::mat& P_old, double alpha) {
   // alpha must be in the range [0, 1)
   P_new = ((1.0 - alpha) * P_new) + (alpha * P_old);
 }
@@ -55,17 +55,17 @@ void mix_density(arma::mat& P_new, arma::mat& P_old, double alpha) {
  * The formula for the error matrix at the \textit{i}th iteration is:
  *  $e_{i}=F_{i}D_{i}S-SD_{i}F_{i}$
  */
-arma::mat build_error_matrix(arma::mat& F,
-                             arma::mat& D,
-                             arma::mat& S) {
+arma::mat build_error_matrix(const arma::mat& F,
+                             const arma::mat& D,
+                             const arma::mat& S) {
   return (F*D*S) - (S*D*F);
 }
 
 /*!
  * @brief Build the DIIS B matrix, or "$A$" in $Ax=b$.
  */
-arma::mat build_B_matrix(std::deque< arma::mat >& e) {
-  size_t NErr = e.size();
+arma::mat build_B_matrix(const std::deque< arma::mat >& e) {
+  const size_t NErr = e.size();
   arma::mat B(NErr + 1, NErr + 1);
   B(NErr, NErr) = 0.0;
   for (size_t a = 0; a < NErr; a++) {
@@ -84,9 +84,9 @@ arma::mat build_B_matrix(std::deque< arma::mat >& e) {
  * where there are $m$ elements in the Fock and error vectors.
  */
 void build_extrap_fock(arma::mat& F_extrap,
-                       arma::vec& diis_coeffs,
-                       std::deque< arma::mat >& diis_fock_vec) {
-  size_t len = diis_coeffs.n_elem - 1;
+                       const arma::vec& diis_coeffs,
+                       const std::deque< arma::mat >& diis_fock_vec) {
+  const size_t len = diis_coeffs.n_elem - 1;
   F_extrap.zeros();
   for (size_t i = 0; i < len; i++)
     F_extrap += (diis_coeffs(i) * diis_fock_vec[i]);
@@ -110,7 +110,6 @@ int main()
   const size_t NBasis = 26;
   const size_t M = idx4(NBasis - 1, NBasis - 1, NBasis - 1, NBasis - 1) + 1;
 
-  // size_t i, j, k, l;
   size_t i = 0;
   size_t j = 0;
   size_t k = 0;
@@ -171,10 +170,10 @@ int main()
 
   fclose(ERI_file);
 
-  double thresh_E = 1.0e-15;
-  double thresh_D = 1.0e-10;
+  const double thresh_E = 1.0e-15;
+  const double thresh_D = 1.0e-10;
   size_t iteration = 0;
-  size_t max_iterations = 1024;
+  const size_t max_iterations = 1024;
   double E_total, E_elec_old, E_elec_new, delta_E, rmsd_D;
 
   printf("Overlap Integrals:\n");

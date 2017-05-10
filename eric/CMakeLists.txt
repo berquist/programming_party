@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.0)
 project(programming_party CXX)
 
-find_package(Armadillo)
+find_package(Armadillo REQUIRED)
 if (ARMADILLO_FOUND)
   include_directories("${ARMADILLO_INCLUDE_DIRS}")
-endif (ARMADILLO_FOUND)
+endif()
+find_package(ArrayFire)
+if(ArrayFire_FOUND)
+    include_directories("${ArrayFire_INCLUDE_DIRS}")
+endif()
 
 add_library(molecule 
   diag.cpp 
@@ -45,12 +49,28 @@ add_custom_target(inp_p3_${STUB}
   "${programming_party_BINARY_DIR}/${STUB}_eri.dat"
   )
 
-if (ARMADILLO_FOUND)
+if(ARMADILLO_FOUND)
   add_executable(project3 project3/project3.cpp)
   add_executable(project8 project8/project8.cpp)
   add_dependencies(project3 inp_p3_${STUB})
   add_dependencies(project8 inp_p3_${STUB})
   target_link_libraries(project3 molecule "${ARMADILLO_LIBRARIES}")
   target_link_libraries(project8 molecule "${ARMADILLO_LIBRARIES}")
-endif (ARMADILLO_FOUND)
+endif()
 
+if(ArrayFire_FOUND)
+  add_executable(project8af project8/project8af.cpp)
+  add_dependencies(project8af inp_p3_${STUB})
+  target_link_libraries(project8af molecule)
+  if(ArrayFire_CUDA_FOUND)
+    FIND_LIBRARY( CUDA_NVVM_LIBRARY
+      NAMES "nvvm"
+      PATH_SUFFIXES "nvvm/lib64" "nvvm/lib"
+      PATHS ${CUDA_TOOLKIT_ROOT_DIR}
+      DOC "CUDA NVVM Library"
+    )
+    target_link_libraries(project8af "${ArrayFire_CUDA_LIBRARIES}")
+  else()
+    target_link_libraries(project8af "${ArrayFire_CPU_LIBRARIES}")
+  endif()
+endif()
