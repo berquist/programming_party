@@ -1,11 +1,6 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
-from __future__ import division
-
 import numpy as np
 
-from ..utils import np_load
+from utils import np_load
 
 
 def getargs():
@@ -21,9 +16,11 @@ def getargs():
     return args
 
 
-def ao_mo_4index_noddy(TEI_MO, TEI_AO, C):
+def ao_mo_4index_noddy(TEI_AO, C):
 
     nbasis, norb = C.shape
+
+    TEI_MO = np.zeros(shape=TEI_AO.shape)
 
     for p in range(norb):
         for q in range(norb):
@@ -40,12 +37,14 @@ def ao_mo_4index_noddy(TEI_MO, TEI_AO, C):
                                         C[sg, s] * \
                                         TEI_AO[mu, nu, lm, sg]
 
-    return
+    return TEI_MO
 
 
-def ao_mo_4index_smart_quarter(TEI_MO, TEI_AO, C):
+def ao_mo_4index_smart_quarter(TEI_AO, C):
 
     nbasis, norb = C.shape
+
+    TEI_MO = np.zeros(shape=TEI_AO.shape)
 
     tmp1 = np.zeros(shape=(norb, nbasis, nbasis, nbasis))
     tmp2 = np.zeros(shape=(norb, norb, nbasis, nbasis))
@@ -64,7 +63,12 @@ def ao_mo_4index_smart_quarter(TEI_MO, TEI_AO, C):
                     for sg in range(nbasis):
                         TEI_MO[p, q, r, s] += C[sg, s] * tmp3[p, q, r, sg]
 
-    return
+    return TEI_MO
+
+
+def ao_mo_full_einsum(TEI_AO, C):
+
+    return np.einsum('mnls,ma,nb,lc,sd->abcd', TEI_AO, C, C, C, C)
 
 
 def calc_mp2_energy(TEI_MO, E, nocc):
@@ -100,12 +104,9 @@ if __name__ == "__main__":
     C = np_load('C.npz')
     F_MO = np_load('F_MO.npz')
 
-    # Allocate space for the 2-electron spatial orbitals in the MO
-    # basis.
-    TEI_MO = np.zeros(shape=TEI_AO.shape)
     # Peform the full 4-index AO->MO transformation.
     # ao_mo_4index_noddy(TEI_MO, TEI_AO, C)
-    ao_mo_4index_smart_quarter(TEI_MO, TEI_AO, C)
+    TEI_MO = ao_mo_4index_smart_quarter(TEI_AO, C)
     # Save them MO-basis 2-electron spatial orbitals to disk for later
     # use.
     np.savez_compressed('TEI_MO.npz', TEI_MO)
