@@ -1,15 +1,12 @@
-#!/usr/bin/env python3
-
-from __future__ import print_function
-from __future__ import division
-
 import sys
 
 import numpy as np
 import numpy.linalg as npl
 
-from ..molecule import Molecule
-from ..utils import print_mat
+from molecule import Molecule
+from utils import print_mat
+
+np.set_printoptions(precision=8, linewidth=200, suppress=True)
 
 
 def getargs():

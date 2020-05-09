@@ -1,19 +1,14 @@
-#!/usr/bin/env python
-
 """molecule: Hold our representation of a Molecule and any helpful
 external functions."""
-
-from __future__ import print_function
-from __future__ import division
 
 import numpy as np
 import numpy.linalg as npl
 
-from . import periodic_table as pt
-from . import constants as c
+import periodic_table as pt
+import constants as c
 
 
-class Molecule(object):
+class Molecule:
     """A Python representation of a molecule.
     """
 
