@@ -1,6 +1,6 @@
 import numpy as np
 
-from utils import np_load
+from eric.utils import np_load
 
 
 def getargs():

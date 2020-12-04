@@ -3,8 +3,8 @@ import sys
 import numpy as np
 import numpy.linalg as npl
 
-from molecule import Molecule
-from utils import print_mat
+from eric.molecule import Molecule
+from eric.utils import print_mat
 
 np.set_printoptions(precision=8, linewidth=200, suppress=True)
 

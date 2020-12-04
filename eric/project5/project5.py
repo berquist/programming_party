@@ -1,11 +1,7 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
-from __future__ import division
-
 import numpy as np
+np.set_printoptions(precision=8, linewidth=200, suppress=True)
 
-from ..utils import np_load
+from eric.utils import np_load
 
 
 def getargs():
@@ -32,7 +28,7 @@ def mo_so_4index(TEI_SO, TEI_MO):
                     lint = TEI_MO[p//2, r//2, q//2, s//2] * (p % 2 == r % 2) * (q % 2 == s % 2)
                     rint = TEI_MO[p//2, s//2, q//2, r//2] * (p % 2 == s % 2) * (q % 2 == r % 2)
                     TEI_SO[p, q, r, s] = lint - rint
-    print('sum(ints): {}'.format(np.sum(TEI_SO)))
+
     return
 
 
@@ -59,9 +55,7 @@ def calc_mp2_energy(TEI_SO, T2, nsocc):
     o = slice(0, nsocc)
     v = slice(nsocc, nsorb)
 
-    E_MP2 = np.einsum('ijab,ijab->', TEI_SO[o, o, v, v], T2[o, o, v, v]) / 4.0
-
-    return E_MP2
+    return np.einsum('ijab,ijab->', TEI_SO[o, o, v, v], T2[o, o, v, v]) / 4.0
 
 
 def build_fock_spin_orbital(TEI_SO, H, nsocc):
@@ -89,7 +83,7 @@ def build_diagonal_2(F_SO, nsocc):
     for i in range(0, nsocc):
         for a in range(nsocc, nsorb):
             D[i, a] += (F_SO[i, i] - F_SO[a, a])
-    print('sum(D2): {}'.format(np.sum(D)))
+
     return D
 
 
@@ -105,9 +99,8 @@ def build_diagonal_4(F_SO, nsocc):
             for a in range(nsocc, nsorb):
                 for b in range(nsocc, nsorb):
                     D[i, j, a, b] += (F_SO[i, i] + F_SO[j, j] - F_SO[a, a] - F_SO[b, b])
-    print('sum(D4): {}'.format(np.sum(D)))
-    return D
 
+    return D
 
 def build_intermediates_2index(TEI_SO, F_SO, T1, T2, tau_twiddle, nsocc):
     """Form the 2-index intermediate F using equations 3-5."""

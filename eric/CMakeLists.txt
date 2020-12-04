@@ -6,18 +6,18 @@ if (ARMADILLO_FOUND)
   include_directories("${ARMADILLO_INCLUDE_DIRS}")
 endif (ARMADILLO_FOUND)
 
-add_library(molecule 
-  diag.cpp 
-  utils.hpp 
-  utils.cpp 
-  molecule.hpp 
+add_library(molecule
+  diag.cpp
+  utils.hpp
+  utils.cpp
+  molecule.hpp
   molecule.cpp
   )
 
-set(STUB "h2o_dzp")
+set(STUB "h2o_sto3g")
 
 add_custom_command(
-  OUTPUT 
+  OUTPUT
   "${STUB}_enuc.dat"
   "${STUB}_s.dat"
   "${STUB}_t.dat"
@@ -36,8 +36,8 @@ add_custom_command(
   "${programming_party_SOURCE_DIR}/project3/${STUB}_eri.dat"
   )
 
-add_custom_target(inp_p3_${STUB} 
-  DEPENDS 
+add_custom_target(inp_p3_${STUB}
+  DEPENDS
   "${programming_party_BINARY_DIR}/${STUB}_enuc.dat"
   "${programming_party_BINARY_DIR}/${STUB}_s.dat"
   "${programming_party_BINARY_DIR}/${STUB}_t.dat"
@@ -53,4 +53,3 @@ if (ARMADILLO_FOUND)
   target_link_libraries(project3 molecule "${ARMADILLO_LIBRARIES}")
   target_link_libraries(project8 molecule "${ARMADILLO_LIBRARIES}")
 endif (ARMADILLO_FOUND)
-

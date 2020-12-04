@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-
-from __future__ import print_function
-from __future__ import division
-
 import numpy as np
 np_formatter = {
     'float_kind': lambda x: '{:14.8f}'.format(x)
@@ -10,12 +5,12 @@ np_formatter = {
 np.set_printoptions(linewidth=160, formatter=np_formatter, threshold=np.inf)
 import scipy.constants as spc
 
-from ..utils import matsym
-from ..utils import np_load
-from ..utils import print_mat
-from ..utils import read_arma_mat_ascii
+from eric.utils import matsym
+from eric.utils import np_load
+from eric.utils import print_mat
+from eric.utils import read_arma_mat_ascii
 
-from ..project3.project3 import parse_int_file_2
+from eric.project3.project3 import parse_int_file_2
 
 
 hartree_to_ev = spc.physical_constants['Hartree energy in eV'][0]

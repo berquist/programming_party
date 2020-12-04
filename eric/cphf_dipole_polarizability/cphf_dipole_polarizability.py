@@ -1,8 +1,3 @@
-#!/usr/bin/env python3.6
-
-from __future__ import print_function
-from __future__ import division
-
 import sys
 
 import numpy as np

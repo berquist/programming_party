@@ -1,15 +1,10 @@
-#!/usr/bin/env python3
-
-from __future__ import print_function
-from __future__ import division
-
 import sys
 
 import numpy as np
 import numpy.linalg as npl
 
-from ..molecule import Molecule
-from ..utils import print_mat
+from eric.molecule import Molecule
+from eric.utils import print_mat
 
 
 def getargs():
@@ -29,9 +24,7 @@ def getargs():
                         help="""How should the guess for the initial MO
                         coefficients be obtained?""")
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
 
 
 def parse_file_1(filename):
@@ -45,7 +38,8 @@ def parse_int_file_2(filename, dim):
     with open(filename) as fh:
         contents = fh.readlines()
     for line in contents:
-        mu, nu, intval = map(float, line.split())
+        mu, nu, intval = line.split()
+        mu, nu, intval = int(mu), int(nu), float(intval)
         mat[mu-1, nu-1] = mat[nu-1, mu-1] = intval
     return mat
 
@@ -57,8 +51,8 @@ def parse_int_file_4(filename, dim):
     with open(filename) as fh:
         contents = fh.readlines()
     for line in contents:
-        mu, nu, lm, sg, intval = map(float, line.split())
-        mu, nu, lm, sg = mu - 1, nu - 1, lm - 1, sg - 1
+        mu, nu, lm, sg, intval = line.split()
+        mu, nu, lm, sg = int(mu) - 1, int(nu) - 1, int(lm) - 1, int(sg) - 1
         mat[mu, nu, lm, sg] = \
             mat[mu, nu, sg, lm] = \
             mat[nu, mu, lm, sg] = \
@@ -66,7 +60,7 @@ def parse_int_file_4(filename, dim):
             mat[lm, sg, mu, nu] = \
             mat[lm, sg, nu, mu] = \
             mat[sg, lm, mu, nu] = \
-            mat[sg, lm, nu, mu] = intval
+            mat[sg, lm, nu, mu] = float(intval)
     return mat
 
 ## This doesn't work like it does for the Fock build.

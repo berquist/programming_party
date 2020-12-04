@@ -4,8 +4,8 @@ external functions."""
 import numpy as np
 import numpy.linalg as npl
 
-import periodic_table as pt
-import constants as c
+import eric.periodic_table as pt
+import eric.constants as c
 
 
 class Molecule:
