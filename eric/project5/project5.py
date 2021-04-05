@@ -69,21 +69,6 @@ def calc_mp2_energy(TEI_SO, T2, nsocc):
     return np.einsum("ijab,ijab->", TEI_SO[o, o, v, v], T2[o, o, v, v]) / 4.0
 
 
-def build_fock_spin_orbital(TEI_SO, H, nsocc):
-
-    nsorb = TEI_SO.shape[0]
-
-    F_SO = np.zeros(shape=(nsorb, nsorb))
-
-    for p in range(nsorb):
-        for q in range(nsorb):
-            F_SO[p, q] += H[p // 2, q // 2]
-            for m in range(nsocc):
-                F_SO[p, q] += TEI_SO[p, m, q, m]
-
-    return F_SO
-
-
 def build_diagonal_2(F_SO, nsocc):
     """Build the 2-index energy matrix."""
 
@@ -125,7 +110,6 @@ def build_intermediates_2index_take2(TEI_SO, F_SO, T1, tau_twiddle, nsocc):
 
     # equation (3)
     F[v, v] += (1 - np.eye(nsvir)) * F_SO[v, v]
-    # print(F)
     F[v, v] -= 0.5 * np.einsum("me,ma->ae", F_SO[o, v], T1[o, v])
     F[v, v] += np.einsum("mf,mafe->ae", T1[o, v], TEI_SO[o, v, v, v])
     F[v, v] -= 0.5 * np.einsum(
@@ -142,9 +126,6 @@ def build_intermediates_2index_take2(TEI_SO, F_SO, T1, tau_twiddle, nsocc):
 
     # equation (5)
     F[o, v] = F_SO[o, v] + np.einsum("nf,mnef->me", T1[o, v], TEI_SO[o, o, v, v])
-
-    # TODO where is the virt-occ block?
-    # F[v, o] = F[o, v].T
 
     return F
 
@@ -323,7 +304,8 @@ def main():
     nocc = nelec // 2
     nsocc = nocc * 2
 
-    H = np_load("H.npz")
+    C = np_load("C.npz")
+    H_AO = np_load("H.npz")
     E = np.diag(np_load("F_MO.npz"))
     TEI_MO = np_load("TEI_MO.npz")
 
@@ -334,7 +316,13 @@ def main():
     mo_so_4index(TEI_SO, TEI_MO)
 
     # Build the Fock matrix in the SO basis.
-    F_SO = build_fock_spin_orbital(TEI_SO, H, nsocc)
+    H = np.einsum("up,uv,vq->pq", C, H_AO, C)
+    H = np.repeat(H, 2, axis=0)
+    H = np.repeat(H, 2, axis=1)
+    spin_ind = np.arange(H.shape[0], dtype=int) % 2
+    H *= (spin_ind.reshape(-1, 1) == spin_ind)
+    F_SO = H + np.einsum('pmqm->pq', TEI_SO[:, :nsocc, :, :nsocc])
+
     # Use the SO Fock matrix to build the diagonal energy arrays.
     D1 = build_diagonal_2(F_SO, nsocc)
     D2 = build_diagonal_4(F_SO, nsocc)
